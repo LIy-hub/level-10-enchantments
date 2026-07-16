@@ -15,7 +15,7 @@ function Invoke-Native([scriptblock]$Command, [string]$Description) {
 
 $workspace = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $testClasses = Join-Path $PSScriptRoot 'build\test-classes'
-$jarPath = Join-Path $PSScriptRoot 'build\dist\level10-enchantments-1.4.0.jar'
+$jarPath = Join-Path $PSScriptRoot 'build\dist\level10-enchantments-1.4.1.jar'
 
 & (Join-Path $PSScriptRoot 'test-resources.ps1')
 
@@ -90,7 +90,8 @@ try {
     try { $metadata = $metadataReader.ReadToEnd() | ConvertFrom-Json } finally { $metadataReader.Dispose() }
     Assert ($metadata.environment -eq '*') 'Fabric metadata supports server and client'
     Assert ($metadata.id -eq 'level10enchantments') 'Fabric mod id'
-    Assert ($metadata.version -eq '1.4.0') 'Fabric mod version'
+    Assert ($metadata.version -eq '1.4.1') 'Fabric mod version'
+    Assert ($metadata.depends.'fabric-api' -eq '>=0.146.1') 'Fabric API minimum dependency'
 
     $mixinEntry = $zip.GetEntry('level10enchantments.mixins.json')
     $mixinReader = [System.IO.StreamReader]::new($mixinEntry.Open())

@@ -6,8 +6,8 @@ $libraries = Join-Path $workspace 'libraries'
 $build = Join-Path $PSScriptRoot 'build\package'
 $classes = Join-Path $build 'classes'
 $dist = Join-Path $PSScriptRoot 'build\dist'
-$output = Join-Path $dist 'level10-enchantments-1.4.0.jar'
-$sourcesOutput = Join-Path $dist 'level10-enchantments-1.4.0-sources.jar'
+$output = Join-Path $dist 'level10-enchantments-1.4.1.jar'
+$sourcesOutput = Join-Path $dist 'level10-enchantments-1.4.1-sources.jar'
 
 $javacVersion = (& javac -version 2>&1 | Out-String).Trim()
 if ($javacVersion -notmatch '^javac 25\.') {

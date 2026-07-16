@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "level10enchantments",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "name": "Level 10 Enchantments",
   "description": "Adds level X enchantments, compatibility features, and a universal 100-level anvil cost cap.",
   "license": "LGPL-3.0-or-later",
@@ -12,6 +12,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.19.3",
+    "fabric-api": ">=0.146.1",
     "minecraft": "26.1.2",
     "java": ">=25"
   }

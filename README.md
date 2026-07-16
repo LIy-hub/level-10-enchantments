@@ -27,8 +27,12 @@ A Fabric mod for Minecraft 26.1.2 that extends selected vanilla enchantments to 
 
 - Minecraft `26.1.2`
 - Fabric Loader `0.19.3+`
+- Fabric API `0.146.1+` (tested with `0.154.2+26.1.2`)
 - Java `25+`
-- Fabric API is not required / 不需要 Fabric API
+
+Fabric API `0.146.1+` is required. The currently verified version is `0.154.2+26.1.2`.
+
+需要 Fabric API `0.146.1+`，当前实测版本为 `0.154.2+26.1.2`。
 
 For multiplayer, the mod is required on the server and optional on clients. Singleplayer users install it on the client.
 
@@ -54,4 +58,3 @@ Licensed under the GNU Lesser General Public License v3.0 or later:
 `LGPL-3.0-or-later`
 
 See [LICENSE](LICENSE), [COPYING.LESSER](COPYING.LESSER), and [COPYING](COPYING).
-

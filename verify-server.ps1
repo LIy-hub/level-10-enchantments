@@ -35,7 +35,7 @@ if (Test-Path -LiteralPath $testRoot) {
 New-Item -ItemType Directory -Force -Path $testRoot | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $testRoot 'mods') | Out-Null
 Copy-Item (Join-Path $workspace 'fabric-server.jar') $testRoot
-$candidateJar = Join-Path $PSScriptRoot 'build\dist\level10-enchantments-1.4.0.jar'
+$candidateJar = Join-Path $PSScriptRoot 'build\dist\level10-enchantments-1.4.1.jar'
 Assert (Test-Path -LiteralPath $candidateJar) 'tested Level 10 Enchantments candidate exists'
 Get-ChildItem (Join-Path $workspace 'mods') -Filter '*.jar' -File |
     Where-Object { $_.Name -notlike 'level10-enchantments-*.jar' } |
