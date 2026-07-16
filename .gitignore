@@ -1,0 +1,8 @@
+/build/
+/release/edge-current.png
+/release/github-auth.png
+*.log
+*.tmp
+.idea/
+.vscode/
+*.iml
