@@ -1,4 +1,5 @@
 /build/
+/.ci-workspace/
 /release/edge-current.png
 /release/github-auth.png
 *.log

@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Cache Fabric server dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .ci-workspace/libraries
+            .ci-workspace/versions
+            .ci-workspace/fabric-server.jar
+          key: fabric-server-26.1.2-loader-0.19.3-installer-1.1.1-v1
+
+      - name: Prepare Minecraft build workspace
+        shell: pwsh
+        run: |
+          .\scripts\prepare-ci-workspace.ps1
+          "LEVEL10_WORKSPACE=$((Resolve-Path .ci-workspace).Path)" >> $env:GITHUB_ENV
+
+      - name: Build and test
+        shell: pwsh
+        run: .\test.ps1
+
+      - name: Upload mod artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: level10-enchantments-1.4.1
+          path: |
+            build/dist/level10-enchantments-1.4.1.jar
+            build/dist/level10-enchantments-1.4.1-sources.jar
+          if-no-files-found: error

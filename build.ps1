@@ -1,6 +1,10 @@
 $ErrorActionPreference = 'Stop'
 
-$workspace = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$workspace = if ([string]::IsNullOrWhiteSpace($env:LEVEL10_WORKSPACE)) {
+    Resolve-Path (Join-Path $PSScriptRoot '..\..')
+} else {
+    Resolve-Path -LiteralPath $env:LEVEL10_WORKSPACE
+}
 $serverJar = Join-Path $workspace 'versions\26.1.2\server-26.1.2.jar'
 $libraries = Join-Path $workspace 'libraries'
 $build = Join-Path $PSScriptRoot 'build\package'
@@ -72,6 +76,7 @@ if (Test-Path -LiteralPath $sourcesOutput) {
     -C $PSScriptRoot COPYING `
     -C $PSScriptRoot COPYING.LESSER `
     -C $PSScriptRoot build.ps1 `
+    -C $PSScriptRoot scripts `
     -C $PSScriptRoot generate-resources.ps1 `
     -C $PSScriptRoot test-resources.ps1 `
     -C $PSScriptRoot test.ps1 `

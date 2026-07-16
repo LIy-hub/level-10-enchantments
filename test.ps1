@@ -13,7 +13,6 @@ function Invoke-Native([scriptblock]$Command, [string]$Description) {
     }
 }
 
-$workspace = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $testClasses = Join-Path $PSScriptRoot 'build\test-classes'
 $jarPath = Join-Path $PSScriptRoot 'build\dist\level10-enchantments-1.4.1.jar'
 

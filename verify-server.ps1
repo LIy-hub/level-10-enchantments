@@ -10,7 +10,11 @@ function Assert([bool]$Condition, [string]$Message) {
     }
 }
 
-$workspace = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$workspace = if ([string]::IsNullOrWhiteSpace($env:LEVEL10_WORKSPACE)) {
+    Resolve-Path (Join-Path $PSScriptRoot '..\..')
+} else {
+    Resolve-Path -LiteralPath $env:LEVEL10_WORKSPACE
+}
 $buildRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'build'))
 $variant = if ($ExcludeTaxFreeLevels) { 'without-taxfreelevels' } else { 'with-taxfreelevels' }
 $testRoot = [System.IO.Path]::GetFullPath((Join-Path $buildRoot "integration-server-$variant"))

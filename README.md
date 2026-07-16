@@ -1,5 +1,8 @@
 # Level 10 Enchantments
 
+[![CI](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml)
+
 A Fabric mod for Minecraft 26.1.2 that extends selected vanilla enchantments to level X.
 
 十级附魔是一个适用于 Minecraft 26.1.2 的 Fabric 模组，将适合的原版附魔扩展至 X 级。

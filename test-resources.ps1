@@ -19,7 +19,11 @@ function Read-ZipJson($Zip, [string]$Path) {
     }
 }
 
-$workspace = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$workspace = if ([string]::IsNullOrWhiteSpace($env:LEVEL10_WORKSPACE)) {
+    Resolve-Path (Join-Path $PSScriptRoot '..\..')
+} else {
+    Resolve-Path -LiteralPath $env:LEVEL10_WORKSPACE
+}
 $serverJar = Join-Path $workspace 'versions\26.1.2\server-26.1.2.jar'
 $rulesPath = Join-Path $PSScriptRoot 'src\main\resources\level10-enchantments.rules.csv'
 $generator = Join-Path $PSScriptRoot 'generate-resources.ps1'
