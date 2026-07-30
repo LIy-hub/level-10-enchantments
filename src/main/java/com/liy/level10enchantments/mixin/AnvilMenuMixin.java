@@ -5,14 +5,16 @@ import com.liy.level10enchantments.AnvilLevelMergePolicy;
 import com.liy.level10enchantments.CompatibilitySurcharge;
 import com.liy.level10enchantments.EnchantmentRules;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -76,56 +78,56 @@ public abstract class AnvilMenuMixin {
     }
 
     private static Map<String, Integer> enchantmentLevels(ItemStack stack) {
+        ItemEnchantments enchantments = EnchantmentHelper.getEnchantmentsForCrafting(stack);
         LinkedHashMap<String, Integer> levels = new LinkedHashMap<>();
-        for (Map.Entry<Enchantment, Integer> entry :
-                EnchantmentHelper.getEnchantments(stack).entrySet()) {
-            levels.put(enchantmentId(entry.getKey()), entry.getValue());
+        for (Holder<Enchantment> holder : enchantments.keySet()) {
+            holder.unwrapKey().ifPresent(key -> levels.put(
+                    key.location().toString(),
+                    enchantments.getLevel(holder.value())
+            ));
         }
         return levels;
     }
 
     private static int balanceResultLevels(ItemStack left, ItemStack right, ItemStack result) {
-        Map<Enchantment, Integer> leftEnchantments = EnchantmentHelper.getEnchantments(left);
-        Map<Enchantment, Integer> rightEnchantments = EnchantmentHelper.getEnchantments(right);
-        Map<Enchantment, Integer> resultEnchantments =
-                new LinkedHashMap<>(EnchantmentHelper.getEnchantments(result));
-        boolean rightIsBook = right.is(Items.ENCHANTED_BOOK);
-        int preventedCost = 0;
+        ItemEnchantments leftEnchantments = EnchantmentHelper.getEnchantmentsForCrafting(left);
+        ItemEnchantments rightEnchantments = EnchantmentHelper.getEnchantmentsForCrafting(right);
+        boolean rightIsBook = right.has(DataComponents.STORED_ENCHANTMENTS);
+        int[] preventedCost = {0};
 
-        for (Map.Entry<Enchantment, Integer> entry : resultEnchantments.entrySet()) {
-            Enchantment enchantment = entry.getKey();
-            String id = enchantmentId(enchantment);
-            EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
-            if (rule == null) {
-                continue;
-            }
-
-            int leftLevel = leftEnchantments.getOrDefault(enchantment, 0);
-            int rightLevel = rightEnchantments.getOrDefault(enchantment, 0);
-            int mergedLevel = AnvilLevelMergePolicy.merge(
-                    rule.vanillaMax(),
-                    leftLevel,
-                    rightLevel
-            );
-            entry.setValue(mergedLevel);
-
-            if (AnvilLevelMergePolicy.preventsIncrement(
-                    rule.vanillaMax(),
-                    leftLevel,
-                    rightLevel
-            )) {
-                int unitCost = enchantment.getRarity().getWeight();
-                if (rightIsBook) {
-                    unitCost = Math.max(1, unitCost / 2);
+        EnchantmentHelper.updateEnchantments(result, mutable -> {
+            for (Holder<Enchantment> holder : List.copyOf(mutable.keySet())) {
+                Enchantment enchantment = holder.value();
+                String id = holder.unwrapKey()
+                        .map(key -> key.location().toString())
+                        .orElse("");
+                EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
+                if (rule == null) {
+                    continue;
                 }
-                preventedCost += unitCost;
-            }
-        }
-        EnchantmentHelper.setEnchantments(resultEnchantments, result);
-        return preventedCost;
-    }
 
-    private static String enchantmentId(Enchantment enchantment) {
-        return BuiltInRegistries.ENCHANTMENT.getKey(enchantment).toString();
+                int leftLevel = leftEnchantments.getLevel(enchantment);
+                int rightLevel = rightEnchantments.getLevel(enchantment);
+                int mergedLevel = AnvilLevelMergePolicy.merge(
+                        rule.vanillaMax(),
+                        leftLevel,
+                        rightLevel
+                );
+                mutable.set(enchantment, mergedLevel);
+
+                if (AnvilLevelMergePolicy.preventsIncrement(
+                        rule.vanillaMax(),
+                        leftLevel,
+                        rightLevel
+                )) {
+                    int unitCost = enchantment.getAnvilCost();
+                    if (rightIsBook) {
+                        unitCost = Math.max(1, unitCost / 2);
+                    }
+                    preventedCost[0] += unitCost;
+                }
+            }
+        });
+        return preventedCost[0];
     }
 }

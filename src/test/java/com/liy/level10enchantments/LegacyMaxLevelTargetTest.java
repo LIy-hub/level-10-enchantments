@@ -2,7 +2,6 @@ package com.liy.level10enchantments;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Set;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -10,27 +9,6 @@ import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 public final class LegacyMaxLevelTargetTest {
-    private static final Set<String> MIXED_OVERRIDE_CLASSES = Set.of(
-            "ArrowDamageEnchantment",
-            "ArrowKnockbackEnchantment",
-            "ArrowPiercingEnchantment",
-            "DamageEnchantment",
-            "DigDurabilityEnchantment",
-            "DiggingEnchantment",
-            "FireAspectEnchantment",
-            "FrostWalkerEnchantment",
-            "KnockbackEnchantment",
-            "LootBonusEnchantment",
-            "OxygenEnchantment",
-            "ProtectionEnchantment",
-            "SoulSpeedEnchantment",
-            "SweepingEdgeEnchantment",
-            "ThornsEnchantment",
-            "TridentImpalerEnchantment",
-            "TridentLoyaltyEnchantment",
-            "TridentRiptideEnchantment"
-    );
-
     private LegacyMaxLevelTargetTest() {
     }
 
@@ -47,8 +25,7 @@ public final class LegacyMaxLevelTargetTest {
             Method maximum = enchantment.getClass().getMethod("getMaxLevel");
             Class<?> declaringClass = maximum.getDeclaringClass();
             require(
-                    declaringClass == Enchantment.class
-                            || MIXED_OVERRIDE_CLASSES.contains(declaringClass.getSimpleName()),
+                    declaringClass == Enchantment.class,
                     "Mixin target covers " + id + " via " + declaringClass.getName()
             );
         }

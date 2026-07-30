@@ -5,7 +5,10 @@ import com.liy.level10enchantments.LootBalancePolicy;
 import com.liy.level10enchantments.MasterLibrarianTradePolicy;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
@@ -14,8 +17,10 @@ import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import org.spongepowered.asm.mixin.Mixin;
@@ -78,7 +83,11 @@ public abstract class AbstractVillagerMixin {
         ItemStack result = EnchantedBookItem.createForEnchantment(
                 new EnchantmentInstance(enchantment, trade.level())
         );
-        result.getOrCreateTag().putBoolean(TRADE_MARKER, true);
+        CustomData.update(
+                DataComponents.CUSTOM_DATA,
+                result,
+                tag -> tag.putBoolean(TRADE_MARKER, true)
+        );
 
         Item catalyst = switch (trade.catalyst()) {
             case BOOK -> Items.BOOK;
@@ -87,8 +96,8 @@ public abstract class AbstractVillagerMixin {
             case NETHERITE_INGOT -> Items.NETHERITE_INGOT;
         };
         return new MerchantOffer(
-                new ItemStack(Items.EMERALD, trade.emeraldCost()),
-                new ItemStack(catalyst),
+                new ItemCost(Items.EMERALD, trade.emeraldCost()),
+                Optional.of(new ItemCost(catalyst, 1)),
                 result,
                 trade.maxUses(),
                 30,
@@ -97,7 +106,9 @@ public abstract class AbstractVillagerMixin {
     }
 
     private static boolean isBalancedTrade(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().getBoolean(TRADE_MARKER);
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        CompoundTag tag = customData.copyTag();
+        return tag.getBoolean(TRADE_MARKER);
     }
 
     private static String enchantmentId(Enchantment enchantment) {

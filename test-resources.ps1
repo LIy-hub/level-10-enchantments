@@ -1,5 +1,5 @@
 param(
-    [string]$MinecraftVersion = '1.20.4'
+    [string]$MinecraftVersion = '1.20.5'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -32,7 +32,7 @@ $expectedIds = @(
     'minecraft:knockback',
     'minecraft:punch',
     'minecraft:piercing',
-    'minecraft:sweeping',
+    'minecraft:sweeping_edge',
     'minecraft:looting',
     'minecraft:riptide',
     'minecraft:loyalty',

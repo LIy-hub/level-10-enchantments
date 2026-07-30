@@ -8,7 +8,7 @@ minecraft:fire_aspect,2,true,vanilla
 minecraft:knockback,2,true,vanilla
 minecraft:punch,2,true,vanilla
 minecraft:piercing,4,true,vanilla
-minecraft:sweeping,3,true,vanilla
+minecraft:sweeping_edge,3,true,vanilla
 minecraft:looting,3,true,vanilla
 minecraft:riptide,3,true,vanilla
 minecraft:loyalty,3,true,vanilla

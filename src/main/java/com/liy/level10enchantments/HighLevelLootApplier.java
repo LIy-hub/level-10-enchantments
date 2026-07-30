@@ -1,8 +1,7 @@
 package com.liy.level10enchantments;
 
 import java.util.List;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.EnchantedBookItem;
@@ -41,31 +40,29 @@ public final class HighLevelLootApplier {
             ItemStack stack,
             RandomSource random
     ) {
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || !EnchantmentHelper.hasAnyEnchantments(stack)) {
             return;
         }
-        Map<Enchantment, Integer> enchantments =
-                new LinkedHashMap<>(EnchantmentHelper.getEnchantments(stack));
-        if (enchantments.isEmpty()) {
-            return;
-        }
-        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-            String id = enchantmentId(entry.getKey());
-            EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
-            if (rule == null) {
-                continue;
-            }
-
-            int level = Math.min(entry.getValue(), rule.vanillaMax());
-            if (LootBalancePolicy.allowsHighLevel(profile, id)) {
-                int selectedLevel = LootBalancePolicy.selectHighLevel(profile, random.nextDouble());
-                if (selectedLevel != 0) {
-                    level = selectedLevel;
+        EnchantmentHelper.updateEnchantments(stack, mutable -> {
+            for (Holder<Enchantment> holder : List.copyOf(mutable.keySet())) {
+                Enchantment enchantment = holder.value();
+                String id = enchantmentId(enchantment);
+                EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
+                if (rule == null) {
+                    continue;
                 }
+
+                int level = Math.min(mutable.getLevel(enchantment), rule.vanillaMax());
+                if (LootBalancePolicy.allowsHighLevel(profile, id)) {
+                    int selectedLevel =
+                            LootBalancePolicy.selectHighLevel(profile, random.nextDouble());
+                    if (selectedLevel != 0) {
+                        level = selectedLevel;
+                    }
+                }
+                mutable.set(enchantment, level);
             }
-            entry.setValue(level);
-        }
-        EnchantmentHelper.setEnchantments(enchantments, stack);
+        });
     }
 
     private static ItemStack createExtraBook(

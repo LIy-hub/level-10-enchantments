@@ -2,11 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.liy.level10enchantments.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractVillagerMixin",
     "EnchantmentMixin",
-    "ManagedMaxLevelMixin",
     "ExperienceOrbMixin",
     "ThornsEnchantmentMixin",
     "EnchantRandomlyFunctionMixin",

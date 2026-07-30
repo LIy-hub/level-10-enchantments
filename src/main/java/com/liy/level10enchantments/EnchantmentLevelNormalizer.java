@@ -1,7 +1,7 @@
 package com.liy.level10enchantments;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -11,22 +11,19 @@ public final class EnchantmentLevelNormalizer {
     }
 
     public static void capToVanillaMaximum(ItemStack stack) {
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || !EnchantmentHelper.hasAnyEnchantments(stack)) {
             return;
         }
-        Map<Enchantment, Integer> enchantments =
-                new LinkedHashMap<>(EnchantmentHelper.getEnchantments(stack));
-        boolean changed = false;
-        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-            String id = EnchantmentHelper.getEnchantmentId(entry.getKey()).toString();
-            EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
-            if (rule != null && entry.getValue() > rule.vanillaMax()) {
-                entry.setValue(rule.vanillaMax());
-                changed = true;
+        EnchantmentHelper.updateEnchantments(stack, mutable -> {
+            for (Holder<Enchantment> holder : List.copyOf(mutable.keySet())) {
+                String id = holder.unwrapKey()
+                        .map(key -> key.location().toString())
+                        .orElse("");
+                EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
+                if (rule != null && mutable.getLevel(holder.value()) > rule.vanillaMax()) {
+                    mutable.set(holder.value(), rule.vanillaMax());
+                }
             }
-        }
-        if (changed) {
-            EnchantmentHelper.setEnchantments(enchantments, stack);
-        }
+        });
     }
 }

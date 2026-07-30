@@ -2,6 +2,7 @@ package com.liy.level10enchantments.mixin;
 
 import com.liy.level10enchantments.EnchantmentLevelNormalizer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,10 +20,11 @@ public abstract class EnchantmentHelperMixin {
     }
 
     @Inject(
-            method = "enchantItem(Lnet/minecraft/util/RandomSource;Lnet/minecraft/world/item/ItemStack;IZ)Lnet/minecraft/world/item/ItemStack;",
+            method = "enchantItem(Lnet/minecraft/world/flag/FeatureFlagSet;Lnet/minecraft/util/RandomSource;Lnet/minecraft/world/item/ItemStack;IZ)Lnet/minecraft/world/item/ItemStack;",
             at = @At("RETURN")
     )
     private static void level10$capGeneratedEnchantments(
+            FeatureFlagSet enabledFeatures,
             RandomSource random,
             ItemStack stack,
             int level,

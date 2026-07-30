@@ -1,5 +1,5 @@
 param(
-    [string]$MinecraftVersion = '1.20.4'
+    [string]$MinecraftVersion = '1.20.5'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -61,7 +61,6 @@ $requiredEntries = @(
     'com/liy/level10enchantments/RainbowColors.class',
     'com/liy/level10enchantments/mixin/AbstractVillagerMixin.class',
     'com/liy/level10enchantments/mixin/EnchantmentMixin.class',
-    'com/liy/level10enchantments/mixin/ManagedMaxLevelMixin.class',
     'com/liy/level10enchantments/mixin/ExperienceOrbMixin.class',
     'com/liy/level10enchantments/mixin/ThornsEnchantmentMixin.class',
     'com/liy/level10enchantments/mixin/EnchantRandomlyFunctionMixin.class',
@@ -106,7 +105,7 @@ try {
     Assert ($mixins.required -eq $true) 'Mixin configuration required'
     Assert ($mixins.compatibilityLevel -eq $expectedMixinCompatibility) `
         'Mixin Java compatibility matches branch'
-    Assert ($mixins.mixins.Count -eq 10) 'ten common Mixins configured'
+    Assert ($mixins.mixins.Count -eq 9) 'nine common Mixins configured'
     Assert ($mixins.client.Count -eq 1) 'one client Mixin configured'
 
     $rulesText = Read-ZipText $zip 'level10-enchantments.rules.csv'
