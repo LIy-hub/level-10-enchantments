@@ -7,7 +7,7 @@ not add custom enchantments.
 十级附魔将选定的原版附魔扩展至 X 级，并让高阶等级继续受结构战利品和大师级
 图书管理员交易限制；模组不新增自定义附魔。
 
-## Minecraft 1.20.3 features / Minecraft 1.20.3 功能
+## Minecraft 1.20.4 features / Minecraft 1.20.4 功能
 
 - 26 supported vanilla enchantments; Density, Wind Burst, and Lunge are absent
   from this Minecraft version and are not backported.<br>
@@ -41,9 +41,9 @@ not add custom enchantments.
 
 ## Requirements / 运行要求
 
-- Minecraft `1.20.3`
+- Minecraft `1.20.4`
 - Fabric Loader `0.19.3+`
-- Fabric API `0.91.1+1.20.3`
+- Fabric API `0.97.3+1.20.4`
 - Java `17+`
 
 Dedicated servers require the mod. Multiplayer clients may omit it; singleplayer
