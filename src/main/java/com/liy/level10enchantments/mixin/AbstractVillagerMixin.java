@@ -39,8 +39,8 @@ public abstract class AbstractVillagerMixin {
             CallbackInfoReturnable<MerchantOffers> callback
     ) {
         if (!((Object) this instanceof Villager villager)
-                || villager.getVillagerData().getLevel() < 5
-                || villager.getVillagerData().getProfession() != VillagerProfession.LIBRARIAN) {
+                || villager.getVillagerData().level() < 5
+                || !villager.getVillagerData().profession().is(VillagerProfession.LIBRARIAN)) {
             return;
         }
 
@@ -106,7 +106,7 @@ public abstract class AbstractVillagerMixin {
     private static boolean isBalancedTrade(ItemStack stack) {
         CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         CompoundTag tag = customData.copyTag();
-        return tag.getBoolean(TRADE_MARKER);
+        return tag.getBooleanOr(TRADE_MARKER, false);
     }
 
     private static String enchantmentId(Holder<Enchantment> holder) {

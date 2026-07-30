@@ -3,9 +3,9 @@
 [![CI](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml)
 
-A Fabric mod for Minecraft 1.21.4 that extends selected vanilla enchantments to level X.
+A Fabric mod for Minecraft 1.21.5 that extends selected vanilla enchantments to level X.
 
-十级附魔是一个适用于 Minecraft 1.21.4 的 Fabric 模组，将适合的原版附魔扩展至 X 级。
+十级附魔是一个适用于 Minecraft 1.21.5 的 Fabric 模组，将适合的原版附魔扩展至 X 级。
 
 ## Features / 功能
 
@@ -63,10 +63,10 @@ Walker remain in the general loot and librarian pools.
 灵魂疾行 VI-X 仅出现在堡垒遗迹来源；风爆 VI-X 仅出现在不祥试炼宝库。
 图书管理员不会出售这两种附魔；经验修补和冰霜行者仍属于通用战利品与交易池。
 
-Lunge does not exist in Minecraft 1.21.4, so this branch does not add or backport
+Lunge does not exist in Minecraft 1.21.5, so this branch does not add or backport
 it. Lunge support begins only on the Minecraft 1.21.11 branch.
 
-突刺（Lunge）并不存在于 Minecraft 1.21.4，因此本分支不会新增或向旧版本移植该附魔。
+突刺（Lunge）并不存在于 Minecraft 1.21.5，因此本分支不会新增或向旧版本移植该附魔。
 突刺支持仅从 Minecraft 1.21.11 分支开始。
 
 Every master librarian receives exactly one persistent, restockable high-level
@@ -89,14 +89,14 @@ catalyst item.
 
 ## Requirements / 运行要求
 
-- Minecraft `1.21.4`
+- Minecraft `1.21.5`
 - Fabric Loader `0.19.3+`
-- Fabric API `0.119.4+1.21.4`
+- Fabric API `0.128.2+1.21.5`
 - Java `21+`
 
-This branch is compiled and verified against Fabric API `0.119.4+1.21.4`.
+This branch is compiled and verified against Fabric API `0.128.2+1.21.5`.
 
-本分支使用 Fabric API `0.119.4+1.21.4` 编译并验证。
+本分支使用 Fabric API `0.128.2+1.21.5` 编译并验证。
 
 For multiplayer, the mod is required on the server and optional on clients. Singleplayer users install it on the client.
 
@@ -106,10 +106,10 @@ For multiplayer, the mod is required on the server and optional on clients. Sing
 
 The repository includes a Gradle 9.5.1 wrapper. The build uses Java 21,
 official Mojang mappings, Fabric Loom 1.17.17, and downloads the exact
-Minecraft 1.21.4 server data required to generate the enchantment overrides. Run:
+Minecraft 1.21.5 server data required to generate the enchantment overrides. Run:
 
 仓库内置 Gradle 9.5.1 Wrapper。构建使用 Java 21、Mojang 官方映射和
-Fabric Loom 1.17.17，并自动下载生成附魔覆盖所需的 Minecraft 1.21.4
+Fabric Loom 1.17.17，并自动下载生成附魔覆盖所需的 Minecraft 1.21.5
 服务端数据。运行：
 
 ```powershell
