@@ -27,9 +27,9 @@ High-level enchantments are gated behind selected structure loot and a fixed mas
 
 ## Compatibility
 
-- Minecraft 26.1.2
+- Minecraft 26.2
 - Fabric Loader 0.19.3 or newer
-- Fabric API 0.155.2 or newer (0.155.2+26.1.2 tested and build-pinned)
+- Fabric API 0.155.2 or newer (0.155.2+26.2 tested and build-pinned)
 - Java 25 or newer
 - Dedicated server: required
 - Multiplayer client: optional

@@ -3,9 +3,9 @@
 [![CI](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml)
 
-A Fabric mod for Minecraft 26.1.2 that extends selected vanilla enchantments to level X.
+A Fabric mod for Minecraft 26.2 that extends selected vanilla enchantments to level X.
 
-十级附魔是一个适用于 Minecraft 26.1.2 的 Fabric 模组，将适合的原版附魔扩展至 X 级。
+十级附魔是一个适用于 Minecraft 26.2 的 Fabric 模组，将适合的原版附魔扩展至 X 级。
 
 ## Features / 功能
 
@@ -83,14 +83,14 @@ catalyst item.
 
 ## Requirements / 运行要求
 
-- Minecraft `26.1.2`
+- Minecraft `26.2`
 - Fabric Loader `0.19.3+`
-- Fabric API `0.155.2+` (tested with `0.155.2+26.1.2`)
+- Fabric API `0.155.2+` (tested with `0.155.2+26.2`)
 - Java `25+`
 
-Fabric API `0.155.2+` is required. The verified and build-pinned version is `0.155.2+26.1.2`.
+Fabric API `0.155.2+` is required. The verified and build-pinned version is `0.155.2+26.2`.
 
-需要 Fabric API `0.155.2+`，当前实测及构建锁定版本为 `0.155.2+26.1.2`。
+需要 Fabric API `0.155.2+`，当前实测及构建锁定版本为 `0.155.2+26.2`。
 
 For multiplayer, the mod is required on the server and optional on clients. Singleplayer users install it on the client.
 
@@ -111,8 +111,8 @@ Fabric API 与 Loom，不依赖父级服务器工作区。需要 JDK 25。Window
 
 Build outputs are written to `build/libs/`:
 
-- `level10-enchantments-1.5.1+mc26.1.2.jar`
-- `level10-enchantments-1.5.1+mc26.1.2-sources.jar`
+- `level10-enchantments-1.5.1+mc26.2.jar`
+- `level10-enchantments-1.5.1+mc26.2-sources.jar`
 
 构建产物位于 `build/libs/`，文件名明确包含模组版本与 Minecraft 版本。
 
