@@ -38,6 +38,6 @@ jobs:
       - name: Upload mod artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: level10-enchantments-${{ github.ref_name }}
+          name: level10-enchantments-${{ github.sha }}
           path: build/libs/*.jar
           if-no-files-found: error

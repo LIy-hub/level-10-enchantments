@@ -23,13 +23,13 @@ High-level enchantments are gated behind selected structure loot and a fixed mas
 - Caps all anvil operation costs at 100 levels
 - Results costing more than 100 levels remain obtainable and charge 100 levels
 - Smooth aurora-gradient level-X names without font-weight flicker
-- Requires Fabric API 0.155.2 or newer
+- Requires Fabric API 0.145.4 or newer
 
 ## Compatibility
 
-- Minecraft 26.1.2
+- Minecraft 26.1.1
 - Fabric Loader 0.19.3 or newer
-- Fabric API 0.155.2 or newer (0.155.2+26.1.2 tested and build-pinned)
+- Fabric API 0.145.4 or newer (0.145.4+26.1.1 tested and build-pinned)
 - Java 25 or newer
 - Dedicated server: required
 - Multiplayer client: optional
