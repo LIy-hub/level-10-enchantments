@@ -84,7 +84,7 @@ public final class HighLevelLootApplier {
 
     private static String enchantmentId(Holder<Enchantment> holder) {
         return holder.unwrapKey()
-                .map(key -> key.location().toString())
+                .map(key -> key.identifier().toString())
                 .orElse("");
     }
 }

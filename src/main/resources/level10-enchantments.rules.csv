@@ -13,6 +13,7 @@ minecraft:sweeping_edge,3,true,vanilla
 minecraft:looting,3,true,vanilla
 minecraft:riptide,3,true,vanilla
 minecraft:loyalty,3,true,vanilla
+minecraft:lunge,3,true,lunge
 minecraft:wind_burst,3,false,vanilla
 minecraft:efficiency,5,true,vanilla
 minecraft:fortune,3,true,vanilla

@@ -17,7 +17,7 @@ public final class EnchantmentLevelNormalizer {
         EnchantmentHelper.updateEnchantments(stack, mutable -> {
             for (Holder<Enchantment> holder : List.copyOf(mutable.keySet())) {
                 String id = holder.unwrapKey()
-                        .map(key -> key.location().toString())
+                        .map(key -> key.identifier().toString())
                         .orElse("");
                 EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
                 if (rule != null && mutable.getLevel(holder) > rule.vanillaMax()) {

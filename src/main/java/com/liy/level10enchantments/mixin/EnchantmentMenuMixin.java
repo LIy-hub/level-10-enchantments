@@ -25,7 +25,7 @@ public abstract class EnchantmentMenuMixin {
         List<EnchantmentInstance> transformed = new ArrayList<>();
         for (EnchantmentInstance instance : callback.getReturnValue()) {
             String id = instance.enchantment().unwrapKey()
-                    .map(key -> key.location().toString())
+                    .map(key -> key.identifier().toString())
                     .orElse("");
             int level = EnchantingLevelPolicy.capToVanillaMaximum(id, instance.level());
             transformed.add(new EnchantmentInstance(instance.enchantment(), level));

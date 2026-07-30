@@ -44,9 +44,9 @@ if (Test-Path -LiteralPath $output) {
 & $generator -Output $output -MinecraftVersion $MinecraftVersion
 
 $rules = @(Import-Csv $rulesPath)
-Assert ($rules.Count -eq 28) 'manifest contains 28 rules'
+Assert ($rules.Count -eq 29) 'manifest contains 29 rules'
 $generatedFiles = @(Get-ChildItem (Join-Path $output 'data\minecraft\enchantment') -Filter '*.json' -File)
-Assert ($generatedFiles.Count -eq 28) 'generator produced exactly 28 enchantment files'
+Assert ($generatedFiles.Count -eq 29) 'generator produced exactly 29 enchantment files'
 $elytraChestEnchantments = @('protection', 'fire_protection', 'blast_protection', 'projectile_protection', 'thorns')
 $compatibleProtectionEnchantments = @('protection', 'fire_protection', 'blast_protection', 'projectile_protection')
 $compatibleDamageEnchantments = @('sharpness', 'smite', 'bane_of_arthropods')
@@ -163,4 +163,4 @@ Assert ($tag.values.Count -eq 2) 'elytra armor tag has exactly two entries'
 Assert ($tag.values[0] -eq '#minecraft:enchantable/armor') 'elytra armor tag retains vanilla armor'
 Assert ($tag.values[1] -eq 'minecraft:elytra') 'elytra armor tag adds elytra'
 
-Write-Output "PASS: 28 overrides validated; compatibility unlocked; Thorns X reworked; Lunge absent on Minecraft $MinecraftVersion."
+Write-Output "PASS: 29 overrides validated; compatibility unlocked; Thorns X reworked; Lunge exhaustion capped at 12."

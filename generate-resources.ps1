@@ -20,8 +20,8 @@ $serverJar = Join-Path $workspace "versions\$MinecraftVersion\server-$MinecraftV
 $rulesPath = Join-Path $PSScriptRoot 'src\main\resources\level10-enchantments.rules.csv'
 $rules = @(Import-Csv $rulesPath)
 
-if ($rules.Count -ne 28) {
-    throw "Expected 28 rules, found $($rules.Count)"
+if ($rules.Count -ne 29) {
+    throw "Expected 29 rules, found $($rules.Count)"
 }
 if (-not (Test-Path -LiteralPath $serverJar)) {
     throw "Missing Minecraft server JAR: $serverJar"

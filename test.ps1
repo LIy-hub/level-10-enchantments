@@ -52,6 +52,7 @@ $requiredEntries = @(
     'com/liy/level10enchantments/mixin/EnchantmentNameMixin.class',
     'data/minecraft/enchantment/mending.json',
     'data/minecraft/enchantment/thorns.json',
+    'data/minecraft/enchantment/lunge.json',
     'data/level10enchantments/tags/item/chest_armor_plus_elytra.json'
 )
 foreach ($entry in $requiredEntries) {
@@ -59,8 +60,7 @@ foreach ($entry in $requiredEntries) {
 }
 
 $enchantmentEntries = @($entries | Where-Object { $_ -like 'data/minecraft/enchantment/*.json' })
-Assert ($enchantmentEntries.Count -eq 28) 'JAR contains exactly 28 enchantment JSON files'
-Assert ($entries -notcontains 'data/minecraft/enchantment/lunge.json') 'JAR does not backport Lunge'
+Assert ($enchantmentEntries.Count -eq 29) 'JAR contains exactly 29 enchantment JSON files'
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zip = [System.IO.Compression.ZipFile]::OpenRead($jarPath)
