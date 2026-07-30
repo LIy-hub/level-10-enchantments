@@ -8,17 +8,17 @@ public final class LootBalancePolicyTest {
         assertProfile(Profile.WOODLAND_MANSION, 600, 300, 150, 70, 30, 1150);
         assertProfile(Profile.BASTION_ORDINARY, 700, 400, 200, 100, 40, 1440);
         assertProfile(Profile.ANCIENT_CITY, 700, 450, 300, 150, 80, 1680);
-        assertProfile(Profile.TRIAL_VAULT, 800, 500, 300, 150, 70, 1820);
         assertProfile(Profile.BASTION_TREASURE, 800, 500, 350, 200, 100, 1950);
         assertProfile(Profile.END_CITY_TREASURE, 900, 600, 400, 250, 150, 2300);
-        assertProfile(Profile.OMINOUS_TRIAL_VAULT, 1000, 700, 500, 300, 200, 2700);
 
         require(profile("minecraft:chests/stronghold_library") == Profile.STRONGHOLD_LIBRARY,
                 "stronghold mapping");
         require(profile("minecraft:chests/bastion_bridge") == Profile.BASTION_ORDINARY,
                 "ordinary bastion bridge mapping");
-        require(profile("minecraft:chests/trial_chambers/reward_ominous") == Profile.OMINOUS_TRIAL_VAULT,
-                "ominous vault mapping");
+        require(LootBalancePolicy.profileFor("minecraft:chests/trial_chambers/reward").isEmpty(),
+                "normal trial vault absent");
+        require(LootBalancePolicy.profileFor("minecraft:chests/trial_chambers/reward_ominous").isEmpty(),
+                "ominous trial vault absent");
         require(LootBalancePolicy.profileFor("minecraft:chests/simple_dungeon").isEmpty(),
                 "unselected source excluded");
 
@@ -40,10 +40,8 @@ public final class LootBalancePolicyTest {
                 "soul speed allowed in treasure bastion");
         require(!LootBalancePolicy.allowsHighLevel(Profile.END_CITY_TREASURE, "minecraft:soul_speed"),
                 "soul speed excluded outside bastions");
-        require(LootBalancePolicy.allowsHighLevel(Profile.OMINOUS_TRIAL_VAULT, "minecraft:wind_burst"),
-                "wind burst allowed in ominous vault");
-        require(!LootBalancePolicy.allowsHighLevel(Profile.TRIAL_VAULT, "minecraft:wind_burst"),
-                "wind burst excluded from normal vault");
+        require(!LootBalancePolicy.allowsHighLevel(Profile.BASTION_TREASURE, "minecraft:wind_burst"),
+                "nonexistent wind burst excluded");
         require(LootBalancePolicy.allowsHighLevel(Profile.STRONGHOLD_LIBRARY, "minecraft:mending"),
                 "mending allowed in general selected loot");
         require(LootBalancePolicy.allowsHighLevel(Profile.STRONGHOLD_LIBRARY, "minecraft:frost_walker"),
@@ -67,8 +65,6 @@ public final class LootBalancePolicyTest {
 
         require(!LootBalancePolicy.allowsLibrarianTrade("minecraft:soul_speed"),
                 "librarian excludes soul speed");
-        require(!LootBalancePolicy.allowsLibrarianTrade("minecraft:wind_burst"),
-                "librarian excludes wind burst");
         require(LootBalancePolicy.allowsLibrarianTrade("minecraft:mending"),
                 "librarian includes mending");
         System.out.println("PASS: high-level loot source probabilities, identities, and dimension gates");

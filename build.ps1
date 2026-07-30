@@ -1,12 +1,12 @@
 param(
-    [string]$MinecraftVersion = '1.21'
+    [string]$MinecraftVersion = '1.20.1'
 )
 
 $ErrorActionPreference = 'Stop'
 
 $javaVersion = (& java -version 2>&1 | Out-String)
-if ($javaVersion -notmatch 'version "21(\.|")') {
-    throw "Java 21 is required to build this branch. Found: $($javaVersion.Trim())"
+if ($javaVersion -notmatch 'version "17(\.|")') {
+    throw "Java 17 is required to build this branch. Found: $($javaVersion.Trim())"
 }
 
 $wrapper = Join-Path $PSScriptRoot 'gradlew.bat'

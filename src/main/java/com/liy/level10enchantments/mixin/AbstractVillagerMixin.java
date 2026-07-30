@@ -5,12 +5,7 @@ import com.liy.level10enchantments.LootBalancePolicy;
 import com.liy.level10enchantments.MasterLibrarianTradePolicy;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
@@ -19,10 +14,8 @@ import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.MerchantOffers;
 import org.spongepowered.asm.mixin.Mixin;
@@ -72,20 +65,20 @@ public abstract class AbstractVillagerMixin {
         RandomSource random = villager.getRandom();
         MasterLibrarianTradePolicy.Trade trade =
                 MasterLibrarianTradePolicy.select(random.nextDouble());
-        HolderLookup.RegistryLookup<Enchantment> registry = villager.registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT);
-        List<Holder.Reference<Enchantment>> candidates = registry.listElements()
-                .filter(holder -> LootBalancePolicy.allowsLibrarianTrade(enchantmentId(holder)))
+        List<Enchantment> candidates = BuiltInRegistries.ENCHANTMENT.stream()
+                .filter(enchantment -> LootBalancePolicy.allowsLibrarianTrade(
+                        enchantmentId(enchantment)
+                ))
                 .toList();
         if (candidates.isEmpty()) {
             return null;
         }
 
-        Holder<Enchantment> enchantment = candidates.get(random.nextInt(candidates.size()));
+        Enchantment enchantment = candidates.get(random.nextInt(candidates.size()));
         ItemStack result = EnchantedBookItem.createForEnchantment(
                 new EnchantmentInstance(enchantment, trade.level())
         );
-        CustomData.update(DataComponents.CUSTOM_DATA, result, tag -> tag.putBoolean(TRADE_MARKER, true));
+        result.getOrCreateTag().putBoolean(TRADE_MARKER, true);
 
         Item catalyst = switch (trade.catalyst()) {
             case BOOK -> Items.BOOK;
@@ -94,8 +87,8 @@ public abstract class AbstractVillagerMixin {
             case NETHERITE_INGOT -> Items.NETHERITE_INGOT;
         };
         return new MerchantOffer(
-                new ItemCost(Items.EMERALD, trade.emeraldCost()),
-                Optional.of(new ItemCost(catalyst, 1)),
+                new ItemStack(Items.EMERALD, trade.emeraldCost()),
+                new ItemStack(catalyst),
                 result,
                 trade.maxUses(),
                 30,
@@ -104,14 +97,10 @@ public abstract class AbstractVillagerMixin {
     }
 
     private static boolean isBalancedTrade(ItemStack stack) {
-        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
-        CompoundTag tag = customData.copyTag();
-        return tag.getBoolean(TRADE_MARKER);
+        return stack.hasTag() && stack.getTag().getBoolean(TRADE_MARKER);
     }
 
-    private static String enchantmentId(Holder<Enchantment> holder) {
-        return holder.unwrapKey()
-                .map(key -> key.location().toString())
-                .orElse("");
+    private static String enchantmentId(Enchantment enchantment) {
+        return BuiltInRegistries.ENCHANTMENT.getKey(enchantment).toString();
     }
 }

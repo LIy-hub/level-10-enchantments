@@ -10,10 +10,8 @@ public final class LootBalancePolicy {
         WOODLAND_MANSION(600, 300, 150, 70, 30),
         BASTION_ORDINARY(700, 400, 200, 100, 40),
         ANCIENT_CITY(700, 450, 300, 150, 80),
-        TRIAL_VAULT(800, 500, 300, 150, 70),
         BASTION_TREASURE(800, 500, 350, 200, 100),
-        END_CITY_TREASURE(900, 600, 400, 250, 150),
-        OMINOUS_TRIAL_VAULT(1000, 700, 500, 300, 200);
+        END_CITY_TREASURE(900, 600, 400, 250, 150);
 
         private final int[] basisPoints;
 
@@ -68,7 +66,6 @@ public final class LootBalancePolicy {
         }
         return switch (enchantmentId) {
             case "minecraft:soul_speed" -> profile.isBastion();
-            case "minecraft:wind_burst" -> profile == Profile.OMINOUS_TRIAL_VAULT;
             default -> true;
         };
     }
@@ -79,8 +76,7 @@ public final class LootBalancePolicy {
 
     public static boolean allowsLibrarianTrade(String enchantmentId) {
         return EnchantmentRules.find(enchantmentId).isPresent()
-                && !enchantmentId.equals("minecraft:soul_speed")
-                && !enchantmentId.equals("minecraft:wind_burst");
+                && !enchantmentId.equals("minecraft:soul_speed");
     }
 
     private static void validateRoll(double roll) {
@@ -97,10 +93,8 @@ public final class LootBalancePolicy {
         profiles.put("minecraft:chests/bastion_hoglin_stable", Profile.BASTION_ORDINARY);
         profiles.put("minecraft:chests/bastion_other", Profile.BASTION_ORDINARY);
         profiles.put("minecraft:chests/ancient_city", Profile.ANCIENT_CITY);
-        profiles.put("minecraft:chests/trial_chambers/reward", Profile.TRIAL_VAULT);
         profiles.put("minecraft:chests/bastion_treasure", Profile.BASTION_TREASURE);
         profiles.put("minecraft:chests/end_city_treasure", Profile.END_CITY_TREASURE);
-        profiles.put("minecraft:chests/trial_chambers/reward_ominous", Profile.OMINOUS_TRIAL_VAULT);
         return Map.copyOf(profiles);
     }
 }

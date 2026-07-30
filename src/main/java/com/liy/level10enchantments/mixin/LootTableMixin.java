@@ -3,7 +3,6 @@ package com.liy.level10enchantments.mixin;
 import com.liy.level10enchantments.HighLevelLootApplier;
 import com.liy.level10enchantments.LootBalancePolicy;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.util.Optional;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -15,11 +14,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Optional;
+
 @Mixin(LootTable.class)
 public abstract class LootTableMixin {
     @Shadow
     @Final
-    private Optional<ResourceLocation> randomSequence;
+    private ResourceLocation randomSequence;
 
     @Inject(
             method = "getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;)Lit/unimi/dsi/fastutil/objects/ObjectArrayList;",
@@ -29,7 +30,7 @@ public abstract class LootTableMixin {
             LootContext context,
             CallbackInfoReturnable<ObjectArrayList<ItemStack>> callback
     ) {
-        LootBalancePolicy.Profile profile = randomSequence
+        LootBalancePolicy.Profile profile = Optional.ofNullable(randomSequence)
                 .flatMap(identifier -> LootBalancePolicy.profileFor(identifier.toString()))
                 .orElse(null);
         String dimensionId = context.getLevel().dimension().location().toString();

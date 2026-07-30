@@ -1,7 +1,6 @@
 package com.liy.level10enchantments.mixin;
 
 import com.liy.level10enchantments.RainbowColors;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -13,11 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Enchantment.class)
 public abstract class EnchantmentNameMixin {
     @Inject(method = "getFullname", at = @At("RETURN"), cancellable = true)
-    private static void level10$rainbowLevelTenName(
-            Holder<Enchantment> enchantment,
-            int level,
-            CallbackInfoReturnable<Component> callback
-    ) {
+    private void level10$rainbowLevelTenName(int level, CallbackInfoReturnable<Component> callback) {
         if (level != 10) {
             return;
         }

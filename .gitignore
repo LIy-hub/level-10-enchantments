@@ -1,5 +1,7 @@
 /build/
 /.gradle/
+/run/
+/logs/
 /.ci-workspace/
 /release/edge-current.png
 /release/github-auth.png

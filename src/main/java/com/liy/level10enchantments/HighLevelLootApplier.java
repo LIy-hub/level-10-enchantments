@@ -1,9 +1,9 @@
 package com.liy.level10enchantments;
 
 import java.util.List;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
@@ -41,27 +41,31 @@ public final class HighLevelLootApplier {
             ItemStack stack,
             RandomSource random
     ) {
-        if (stack.isEmpty() || !EnchantmentHelper.hasAnyEnchantments(stack)) {
+        if (stack.isEmpty()) {
             return;
         }
-        EnchantmentHelper.updateEnchantments(stack, mutable -> {
-            for (Holder<Enchantment> holder : List.copyOf(mutable.keySet())) {
-                String id = enchantmentId(holder);
-                EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
-                if (rule == null) {
-                    continue;
-                }
-
-                int level = Math.min(mutable.getLevel(holder), rule.vanillaMax());
-                if (LootBalancePolicy.allowsHighLevel(profile, id)) {
-                    int selectedLevel = LootBalancePolicy.selectHighLevel(profile, random.nextDouble());
-                    if (selectedLevel != 0) {
-                        level = selectedLevel;
-                    }
-                }
-                mutable.set(holder, level);
+        Map<Enchantment, Integer> enchantments =
+                new LinkedHashMap<>(EnchantmentHelper.getEnchantments(stack));
+        if (enchantments.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
+            String id = enchantmentId(entry.getKey());
+            EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
+            if (rule == null) {
+                continue;
             }
-        });
+
+            int level = Math.min(entry.getValue(), rule.vanillaMax());
+            if (LootBalancePolicy.allowsHighLevel(profile, id)) {
+                int selectedLevel = LootBalancePolicy.selectHighLevel(profile, random.nextDouble());
+                if (selectedLevel != 0) {
+                    level = selectedLevel;
+                }
+            }
+            entry.setValue(level);
+        }
+        EnchantmentHelper.setEnchantments(enchantments, stack);
     }
 
     private static ItemStack createExtraBook(
@@ -70,22 +74,20 @@ public final class HighLevelLootApplier {
             LootContext context,
             RandomSource random
     ) {
-        HolderLookup.RegistryLookup<Enchantment> registry = context.getLevel()
-                .registryAccess()
-                .lookupOrThrow(Registries.ENCHANTMENT);
-        List<Holder.Reference<Enchantment>> candidates = registry.listElements()
-                .filter(holder -> LootBalancePolicy.allowsHighLevel(profile, enchantmentId(holder)))
+        List<Enchantment> candidates = BuiltInRegistries.ENCHANTMENT.stream()
+                .filter(enchantment -> LootBalancePolicy.allowsHighLevel(
+                        profile,
+                        enchantmentId(enchantment)
+                ))
                 .toList();
         if (candidates.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        Holder<Enchantment> enchantment = candidates.get(random.nextInt(candidates.size()));
+        Enchantment enchantment = candidates.get(random.nextInt(candidates.size()));
         return EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, level));
     }
 
-    private static String enchantmentId(Holder<Enchantment> holder) {
-        return holder.unwrapKey()
-                .map(key -> key.location().toString())
-                .orElse("");
+    private static String enchantmentId(Enchantment enchantment) {
+        return BuiltInRegistries.ENCHANTMENT.getKey(enchantment).toString();
     }
 }
