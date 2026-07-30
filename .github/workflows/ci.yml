@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - "mc/**"
   pull_request:
   workflow_dispatch:
 
@@ -11,43 +13,31 @@ permissions:
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
-    timeout-minutes: 25
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
 
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v6
+
       - name: Set up Java 25
         uses: actions/setup-java@v5
         with:
-          distribution: temurin
+          distribution: microsoft
           java-version: "25"
 
-      - name: Cache Fabric server dependencies
-        uses: actions/cache@v5
-        with:
-          path: |
-            .ci-workspace/libraries
-            .ci-workspace/versions
-            .ci-workspace/fabric-server.jar
-          key: fabric-server-26.1.2-loader-0.19.3-installer-1.1.1-v1
-
-      - name: Prepare Minecraft build workspace
-        shell: pwsh
-        run: |
-          .\scripts\prepare-ci-workspace.ps1
-          "LEVEL10_WORKSPACE=$((Resolve-Path .ci-workspace).Path)" >> $env:GITHUB_ENV
+      - name: Make Gradle Wrapper executable
+        run: chmod +x ./gradlew
 
       - name: Build and test
-        shell: pwsh
-        run: .\test.ps1
+        run: ./gradlew clean check build --no-daemon
 
       - name: Upload mod artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: level10-enchantments-1.5.1
-          path: |
-            build/dist/level10-enchantments-1.5.1.jar
-            build/dist/level10-enchantments-1.5.1-sources.jar
+          name: level10-enchantments-${{ github.ref_name }}
+          path: build/libs/*.jar
           if-no-files-found: error

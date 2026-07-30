@@ -1,0 +1,169 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"level10enchantments" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+	def properties = [
+			version           : project.mod_version,
+			minecraft_version : project.minecraft_version,
+			loader_version    : project.loader_version,
+			fabric_api_version: project.fabric_api_version.tokenize('+')[0]
+	]
+	inputs.properties properties
+
+	filesMatching("fabric.mod.json") {
+		expand properties
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.release = 25
+	options.encoding = 'UTF-8'
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+	archiveVersion = "${project.mod_version}+mc${project.minecraft_version}"
+}
+
+jar {
+	from(['LICENSE', 'COPYING', 'COPYING.LESSER']) {
+		into 'META-INF'
+		rename { "${it}_${project.name}" }
+	}
+}
+
+def executablePolicyTests = [
+		'com.liy.level10enchantments.EnchantingLevelPolicyTest',
+		'com.liy.level10enchantments.AnvilLevelMergePolicyTest',
+		'com.liy.level10enchantments.LootBalancePolicyTest',
+		'com.liy.level10enchantments.MasterLibrarianTradePolicyTest',
+		'com.liy.level10enchantments.CompatibilitySurchargeTest',
+		'com.liy.level10enchantments.AnvilCostPolicyTest',
+		'com.liy.level10enchantments.RainbowColorsTest',
+		'com.liy.level10enchantments.ResourceParityTest'
+]
+
+def policyTestTasks = executablePolicyTests.collect { className ->
+	def simpleName = className.substring(className.lastIndexOf('.') + 1)
+	tasks.register("run${simpleName}", JavaExec) {
+		group = 'verification'
+		description = "Runs ${simpleName}."
+		dependsOn testClasses
+		classpath = sourceSets.test.runtimeClasspath
+		mainClass = className
+		systemProperty 'level10.resourcesDir', file('src/main/resources').absolutePath
+		systemProperty 'level10.minecraftVersion', project.minecraft_version
+	}
+}
+
+tasks.register('policyTest') {
+	group = 'verification'
+	description = 'Runs the complete version-neutral gameplay contract.'
+	dependsOn policyTestTasks
+}
+
+tasks.named('check') {
+	dependsOn tasks.named('policyTest')
+}
+
+tasks.named('test') {
+	failOnNoDiscoveredTests = false
+}
+
+tasks.register('verifyJar') {
+	group = 'verification'
+	description = 'Validates the packaged universal client/server JAR.'
+	dependsOn tasks.named('jar')
+
+	doLast {
+		def jarFile = tasks.named('jar').get().archiveFile.get().asFile
+		def entries = [] as Set
+		def metadataText = null
+		new java.util.zip.ZipFile(jarFile).withCloseable { zip ->
+			zip.entries().each { entry -> entries.add(entry.name) }
+			metadataText = zip.getInputStream(zip.getEntry('fabric.mod.json')).getText('UTF-8')
+		}
+
+		def requiredEntries = [
+				'fabric.mod.json',
+				'level10enchantments.mixins.json',
+				'level10-enchantments.rules.csv',
+				'com/liy/level10enchantments/HighLevelLootApplier.class',
+				'com/liy/level10enchantments/mixin/AbstractVillagerMixin.class',
+				'com/liy/level10enchantments/mixin/AnvilMenuMixin.class',
+				'com/liy/level10enchantments/mixin/EnchantRandomlyFunctionMixin.class',
+				'com/liy/level10enchantments/mixin/EnchantmentHelperMixin.class',
+				'com/liy/level10enchantments/mixin/EnchantmentMenuMixin.class',
+				'com/liy/level10enchantments/mixin/LootTableMixin.class',
+				'com/liy/level10enchantments/mixin/EnchantmentNameMixin.class',
+				'data/minecraft/enchantment/mending.json',
+				'data/minecraft/enchantment/thorns.json',
+				'data/level10enchantments/tags/item/chest_armor_plus_elytra.json'
+		]
+		requiredEntries.each { entry ->
+			if (!entries.contains(entry)) {
+				throw new GradleException("Packaged JAR is missing ${entry}")
+			}
+		}
+		def enchantmentEntries = entries.findAll {
+			it.startsWith('data/minecraft/enchantment/') && it.endsWith('.json')
+		}
+		if (enchantmentEntries.size() != 29) {
+			throw new GradleException("Expected 29 enchantment resources, found ${enchantmentEntries.size()}")
+		}
+
+		def metadata = new groovy.json.JsonSlurper().parseText(metadataText)
+		def expectedApiMinimum = project.fabric_api_version.tokenize('+')[0]
+		if (metadata.version != project.mod_version
+				|| metadata.depends.minecraft != project.minecraft_version
+				|| metadata.depends.fabricloader != ">=${project.loader_version}"
+				|| metadata.depends.'fabric-api' != ">=${expectedApiMinimum}"
+				|| metadata.depends.java != '>=25') {
+			throw new GradleException("Packaged fabric.mod.json does not match pinned build properties")
+		}
+		logger.lifecycle("VERIFIED_JAR=${jarFile}")
+	}
+}
+
+tasks.named('build') {
+	dependsOn tasks.named('verifyJar')
+}
+
+publishing {
+	publications {
+		create('mavenJava', MavenPublication) {
+			from components.java
+		}
+	}
+}

@@ -1,9 +1,17 @@
+.gradle/
 /build/
+/out/
+/classes/
+/run/
 /.ci-workspace/
 /release/edge-current.png
 /release/github-auth.png
 *.log
 *.tmp
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
 .idea/
 .vscode/
 *.iml

@@ -85,12 +85,12 @@ catalyst item.
 
 - Minecraft `26.1.2`
 - Fabric Loader `0.19.3+`
-- Fabric API `0.146.1+` (tested with `0.154.2+26.1.2`)
+- Fabric API `0.155.2+` (tested with `0.155.2+26.1.2`)
 - Java `25+`
 
-Fabric API `0.146.1+` is required. The currently verified version is `0.154.2+26.1.2`.
+Fabric API `0.155.2+` is required. The verified and build-pinned version is `0.155.2+26.1.2`.
 
-需要 Fabric API `0.146.1+`，当前实测版本为 `0.154.2+26.1.2`。
+需要 Fabric API `0.155.2+`，当前实测及构建锁定版本为 `0.155.2+26.1.2`。
 
 For multiplayer, the mod is required on the server and optional on clients. Singleplayer users install it on the client.
 
@@ -98,16 +98,23 @@ For multiplayer, the mod is required on the server and optional on clients. Sing
 
 ## Building / 构建
 
-The current PowerShell build pipeline expects a local Minecraft 26.1.2 server JAR and Fabric libraries in the parent server workspace. Run:
+The repository includes the official Gradle Wrapper and resolves Minecraft,
+Fabric Loader, Fabric API, and Loom without relying on a parent server
+workspace. JDK 25 is required. On Windows, run:
 
-当前 PowerShell 构建流程需要父级服务器工作区中的 Minecraft 26.1.2 服务端 JAR 和 Fabric 依赖。运行：
+仓库内包含官方 Gradle Wrapper，并会自行解析 Minecraft、Fabric Loader、
+Fabric API 与 Loom，不依赖父级服务器工作区。需要 JDK 25。Windows 下运行：
 
 ```powershell
-.\build.ps1
-.\test.ps1
+.\gradlew.bat clean check build
 ```
 
-Build outputs are written to `build/dist/`.
+Build outputs are written to `build/libs/`:
+
+- `level10-enchantments-1.5.1+mc26.1.2.jar`
+- `level10-enchantments-1.5.1+mc26.1.2-sources.jar`
+
+构建产物位于 `build/libs/`，文件名明确包含模组版本与 Minecraft 版本。
 
 ## License / 许可证
 
