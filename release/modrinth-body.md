@@ -6,7 +6,7 @@ High-level enchantments are gated behind selected structure loot and a fixed mas
 
 ## Features
 
-- Extends 28 selected vanilla enchantments up to level X on Minecraft 1.21.5
+- Extends 28 selected vanilla enchantments up to level X on Minecraft 1.21.6
 - Uses vanilla scaling formulas where appropriate
 - Enchanting-table results are capped at each enchantment's vanilla maximum
 - 25 bookshelves improve vanilla maximum-level and multi-enchantment results
@@ -22,14 +22,14 @@ High-level enchantments are gated behind selected structure loot and a fixed mas
 - Caps all anvil operation costs at 100 levels
 - Results costing more than 100 levels remain obtainable and charge 100 levels
 - Smooth aurora-gradient level-X names without font-weight flicker
-- Does not add or backport Lunge, which is absent from Minecraft 1.21.5
-- Requires Fabric API 0.128.2+1.21.5
+- Does not add or backport Lunge, which is absent from Minecraft 1.21.6
+- Requires Fabric API 0.128.2+1.21.6
 
 ## Compatibility
 
-- Minecraft 1.21.5
+- Minecraft 1.21.6
 - Fabric Loader 0.19.3 or newer
-- Fabric API 0.128.2+1.21.5
+- Fabric API 0.128.2+1.21.6
 - Java 21 or newer
 - Dedicated server: required
 - Multiplayer client: optional
