@@ -1,5 +1,5 @@
 param(
-    [string]$MinecraftVersion = '1.20.1'
+    [string]$MinecraftVersion = '1.20.2'
 )
 
 $ErrorActionPreference = 'Stop'

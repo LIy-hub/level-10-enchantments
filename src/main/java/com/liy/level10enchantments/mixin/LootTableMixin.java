@@ -20,7 +20,7 @@ import java.util.Optional;
 public abstract class LootTableMixin {
     @Shadow
     @Final
-    private ResourceLocation randomSequence;
+    private Optional<ResourceLocation> randomSequence;
 
     @Inject(
             method = "getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;)Lit/unimi/dsi/fastutil/objects/ObjectArrayList;",
@@ -30,7 +30,7 @@ public abstract class LootTableMixin {
             LootContext context,
             CallbackInfoReturnable<ObjectArrayList<ItemStack>> callback
     ) {
-        LootBalancePolicy.Profile profile = Optional.ofNullable(randomSequence)
+        LootBalancePolicy.Profile profile = randomSequence
                 .flatMap(identifier -> LootBalancePolicy.profileFor(identifier.toString()))
                 .orElse(null);
         String dimensionId = context.getLevel().dimension().location().toString();
