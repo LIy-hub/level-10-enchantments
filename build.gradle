@@ -65,7 +65,11 @@ processResources {
 	inputs.property "minecraftVersion", project.minecraft_version
 	inputs.property "fabricApiVersion", project.fabric_api_version
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand(
+				"version": project.version,
+				"minecraft_version": project.minecraft_version,
+				"fabric_api_min_version": project.fabric_api_min_version
+		)
 	}
 }
 
@@ -98,6 +102,7 @@ def pureLogicTasks = pureLogicTests.collect { testName ->
 		dependsOn tasks.named("testClasses")
 		classpath = sourceSets.test.runtimeClasspath
 		mainClass = "com.liy.level10enchantments.${testName}"
+		maxHeapSize = "128m"
 	}
 }
 

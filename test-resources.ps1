@@ -1,8 +1,13 @@
 param(
-    [string]$MinecraftVersion = '1.21'
+    [string]$MinecraftVersion
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ([string]::IsNullOrWhiteSpace($MinecraftVersion)) {
+    $MinecraftVersion = ((Get-Content (Join-Path $PSScriptRoot 'gradle.properties') |
+        Where-Object { $_ -like 'minecraft_version=*' }) -split '=', 2)[1]
+}
 
 function Assert([bool]$Condition, [string]$Message) {
     if (-not $Condition) {
@@ -158,4 +163,4 @@ Assert ($tag.values.Count -eq 2) 'elytra armor tag has exactly two entries'
 Assert ($tag.values[0] -eq '#minecraft:enchantable/armor') 'elytra armor tag retains vanilla armor'
 Assert ($tag.values[1] -eq 'minecraft:elytra') 'elytra armor tag adds elytra'
 
-Write-Output 'PASS: 28 overrides validated; compatibility unlocked; Thorns X reworked; Lunge absent on Minecraft 1.21.'
+Write-Output "PASS: 28 overrides validated; compatibility unlocked; Thorns X reworked; Lunge absent on Minecraft $MinecraftVersion."

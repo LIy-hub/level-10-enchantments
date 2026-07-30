@@ -1,10 +1,15 @@
 param(
     [Parameter(Mandatory = $true)]
     [string]$Output,
-    [string]$MinecraftVersion = '1.21'
+    [string]$MinecraftVersion
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ([string]::IsNullOrWhiteSpace($MinecraftVersion)) {
+    $MinecraftVersion = ((Get-Content (Join-Path $PSScriptRoot 'gradle.properties') |
+        Where-Object { $_ -like 'minecraft_version=*' }) -split '=', 2)[1]
+}
 
 $workspace = if ([string]::IsNullOrWhiteSpace($env:LEVEL10_WORKSPACE)) {
     Resolve-Path (Join-Path $PSScriptRoot '.ci-workspace')

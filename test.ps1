@@ -1,8 +1,15 @@
 param(
-    [string]$MinecraftVersion = '1.21'
+    [string]$MinecraftVersion
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ([string]::IsNullOrWhiteSpace($MinecraftVersion)) {
+    $MinecraftVersion = ((Get-Content (Join-Path $PSScriptRoot 'gradle.properties') |
+        Where-Object { $_ -like 'minecraft_version=*' }) -split '=', 2)[1]
+}
+$fabricApiMinimum = ((Get-Content (Join-Path $PSScriptRoot 'gradle.properties') |
+    Where-Object { $_ -like 'fabric_api_min_version=*' }) -split '=', 2)[1]
 
 function Assert([bool]$Condition, [string]$Message) {
     if (-not $Condition) {
@@ -70,7 +77,7 @@ try {
     Assert ($metadata.version -eq '1.5.1') 'Fabric mod version'
     Assert ($metadata.depends.minecraft -eq $MinecraftVersion) 'Minecraft dependency is branch exact'
     Assert ($metadata.depends.fabricloader -eq '>=0.19.3') 'Fabric Loader minimum dependency'
-    Assert ($metadata.depends.'fabric-api' -eq '>=0.102.0') 'Fabric API minimum dependency'
+    Assert ($metadata.depends.'fabric-api' -eq ">=$fabricApiMinimum") 'Fabric API minimum dependency'
     Assert ($metadata.depends.java -eq '>=21') 'Java minimum dependency'
 
     $mixinEntry = $zip.GetEntry('level10enchantments.mixins.json')

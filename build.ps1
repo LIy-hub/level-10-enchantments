@@ -1,8 +1,13 @@
 param(
-    [string]$MinecraftVersion = '1.21'
+    [string]$MinecraftVersion
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ([string]::IsNullOrWhiteSpace($MinecraftVersion)) {
+    $MinecraftVersion = ((Get-Content (Join-Path $PSScriptRoot 'gradle.properties') |
+        Where-Object { $_ -like 'minecraft_version=*' }) -split '=', 2)[1]
+}
 
 $javaVersion = (& java -version 2>&1 | Out-String)
 if ($javaVersion -notmatch 'version "21(\.|")') {
