@@ -2,9 +2,8 @@ name: CodeQL
 
 on:
   push:
-    branches: [main]
+    branches: ["mc/**"]
   pull_request:
-    branches: [main]
   schedule:
     - cron: "23 3 * * 1"
   workflow_dispatch:
@@ -22,32 +21,18 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
-      - name: Set up Java 25
+      - name: Set up Java 21
         uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "25"
+          java-version: "21"
+          cache: gradle
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
           languages: java-kotlin
           build-mode: manual
-
-      - name: Cache Fabric server dependencies
-        uses: actions/cache@v5
-        with:
-          path: |
-            .ci-workspace/libraries
-            .ci-workspace/versions
-            .ci-workspace/fabric-server.jar
-          key: fabric-server-26.1.2-loader-0.19.3-installer-1.1.1-v1
-
-      - name: Prepare Minecraft build workspace
-        shell: pwsh
-        run: |
-          .\scripts\prepare-ci-workspace.ps1
-          "LEVEL10_WORKSPACE=$((Resolve-Path .ci-workspace).Path)" >> $env:GITHUB_ENV
 
       - name: Build and test
         shell: pwsh

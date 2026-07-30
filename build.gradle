@@ -1,0 +1,136 @@
+plugins {
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = "${project.archive_base_name}-${project.minecraft_version}"
+}
+
+loom {
+	mods {
+		"level10enchantments" {
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+def generatedResources = layout.buildDirectory.dir("generated/level10-resources")
+
+sourceSets {
+	main {
+		resources {
+			srcDir generatedResources
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+tasks.register("prepareMinecraftServer", Exec) {
+	inputs.property "minecraftVersion", project.minecraft_version
+	outputs.file layout.projectDirectory.file(".ci-workspace/versions/${project.minecraft_version}/server-${project.minecraft_version}.jar")
+
+	commandLine "pwsh", "-NoProfile", "-File",
+			layout.projectDirectory.file("scripts/prepare-ci-workspace.ps1").asFile.absolutePath,
+			"-MinecraftVersion", project.minecraft_version
+}
+
+tasks.register("generateLevel10Resources", Exec) {
+	dependsOn tasks.named("prepareMinecraftServer")
+	inputs.file layout.projectDirectory.file("src/main/resources/level10-enchantments.rules.csv")
+	inputs.file layout.projectDirectory.file("generate-resources.ps1")
+	inputs.property "minecraftVersion", project.minecraft_version
+	outputs.dir generatedResources
+
+	environment "LEVEL10_WORKSPACE", layout.projectDirectory.dir(".ci-workspace").asFile.absolutePath
+	commandLine "pwsh", "-NoProfile", "-File",
+			layout.projectDirectory.file("generate-resources.ps1").asFile.absolutePath,
+			"-Output", generatedResources.get().asFile.absolutePath,
+			"-MinecraftVersion", project.minecraft_version
+}
+
+processResources {
+	dependsOn tasks.named("generateLevel10Resources")
+
+	inputs.property "version", project.version
+	inputs.property "minecraftVersion", project.minecraft_version
+	inputs.property "fabricApiVersion", project.fabric_api_version
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.release = 21
+	options.encoding = "UTF-8"
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+def pureLogicTests = [
+		"EnchantingLevelPolicyTest",
+		"AnvilLevelMergePolicyTest",
+		"LootBalancePolicyTest",
+		"MasterLibrarianTradePolicyTest",
+		"CompatibilitySurchargeTest",
+		"AnvilCostPolicyTest",
+		"RainbowColorsTest"
+]
+
+def pureLogicTasks = pureLogicTests.collect { testName ->
+	tasks.register("run${testName}", JavaExec) {
+		dependsOn tasks.named("testClasses")
+		classpath = sourceSets.test.runtimeClasspath
+		mainClass = "com.liy.level10enchantments.${testName}"
+	}
+}
+
+tasks.register("pureLogicTest") {
+	group = "verification"
+	description = "Runs the standalone gameplay-policy regression tests."
+	dependsOn pureLogicTasks
+}
+
+tasks.named("test") {
+	failOnNoDiscoveredTests = false
+}
+
+tasks.named("check") {
+	dependsOn tasks.named("pureLogicTest")
+}
+
+tasks.named("sourcesJar") {
+	dependsOn tasks.named("generateLevel10Resources")
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.name}" }
+	}
+	from("COPYING")
+	from("COPYING.LESSER")
+}
+
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+}

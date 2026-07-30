@@ -2,7 +2,8 @@ package com.liy.level10enchantments;
 
 public final class EnchantingLevelPolicyTest {
     public static void main(String[] args) {
-        require(EnchantmentRules.all().size() == 29, "manifest size");
+        require(EnchantmentRules.all().size() == 28, "manifest size");
+        require(EnchantmentRules.find("minecraft:lunge").isEmpty(), "lunge is absent before 1.21.11");
         require(cap("minecraft:sharpness", 4) == 4, "below vanilla maximum unchanged");
         require(cap("minecraft:sharpness", 5) == 5, "vanilla maximum unchanged");
         require(cap("minecraft:sharpness", 6) == 5, "VI capped to vanilla maximum");

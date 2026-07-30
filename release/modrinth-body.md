@@ -6,7 +6,7 @@ High-level enchantments are gated behind selected structure loot and a fixed mas
 
 ## Features
 
-- Extends 29 selected vanilla enchantments up to level X
+- Extends 28 selected vanilla enchantments up to level X on Minecraft 1.21
 - Uses vanilla scaling formulas where appropriate
 - Enchanting-table results are capped at each enchantment's vanilla maximum
 - 25 bookshelves improve vanilla maximum-level and multi-enchantment results
@@ -16,21 +16,21 @@ High-level enchantments are gated behind selected structure loot and a fixed mas
 - One persistent, restockable B2 high-level trade per master librarian
 - Mending X repairs 8 durability per experience point, providing 300% more repair efficiency than vanilla Mending
 - Reworked Thorns scaling through level X
-- Caps Lunge exhaustion at 12
 - Allows Elytra to accept selected chestplate enchantments
 - Supports normally incompatible enchantment combinations with progressive anvil surcharges
 - Raises the enchanting bookshelf limit from 15 to 25
 - Caps all anvil operation costs at 100 levels
 - Results costing more than 100 levels remain obtainable and charge 100 levels
 - Smooth aurora-gradient level-X names without font-weight flicker
-- Requires Fabric API 0.146.1 or newer
+- Does not add or backport Lunge, which is absent from Minecraft 1.21
+- Requires Fabric API 0.102.0+1.21
 
 ## Compatibility
 
-- Minecraft 26.1.2
+- Minecraft 1.21
 - Fabric Loader 0.19.3 or newer
-- Fabric API 0.146.1 or newer (0.154.2+26.1.2 tested)
-- Java 25 or newer
+- Fabric API 0.102.0+1.21
+- Java 21 or newer
 - Dedicated server: required
 - Multiplayer client: optional
 - Singleplayer: install the mod on the client

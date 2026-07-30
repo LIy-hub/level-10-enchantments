@@ -82,7 +82,7 @@ public abstract class AnvilMenuMixin {
         LinkedHashMap<String, Integer> levels = new LinkedHashMap<>();
         for (Holder<Enchantment> holder : enchantments.keySet()) {
             holder.unwrapKey().ifPresent(key -> levels.put(
-                    key.identifier().toString(),
+                    key.location().toString(),
                     enchantments.getLevel(holder)
             ));
         }
@@ -98,7 +98,7 @@ public abstract class AnvilMenuMixin {
         EnchantmentHelper.updateEnchantments(result, mutable -> {
             for (Holder<Enchantment> holder : List.copyOf(mutable.keySet())) {
                 String id = holder.unwrapKey()
-                        .map(key -> key.identifier().toString())
+                        .map(key -> key.location().toString())
                         .orElse("");
                 EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
                 if (rule == null) {

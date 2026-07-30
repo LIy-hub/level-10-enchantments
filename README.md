@@ -3,14 +3,14 @@
 [![CI](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml)
 
-A Fabric mod for Minecraft 26.1.2 that extends selected vanilla enchantments to level X.
+A Fabric mod for Minecraft 1.21 that extends selected vanilla enchantments to level X.
 
-十级附魔是一个适用于 Minecraft 26.1.2 的 Fabric 模组，将适合的原版附魔扩展至 X 级。
+十级附魔是一个适用于 Minecraft 1.21 的 Fabric 模组，将适合的原版附魔扩展至 X 级。
 
 ## Features / 功能
 
-- 29 selected vanilla enchantments can reach level X  
-  29 种适合的原版附魔可提升至 X 级
+- 28 selected vanilla enchantments can reach level X<br>
+  28 种适合的原版附魔可提升至 X 级
 - Enchanting never exceeds vanilla maxima; 25 bookshelves make vanilla maximum-level and multi-enchantment results more likely<br>
   附魔台不再突破原版等级；25 个书架只提高原版最高级和多附魔结果的概率
 - Anvils merge equal enchantments only within the vanilla range; equal levels at or above the vanilla maximum no longer increase<br>
@@ -63,6 +63,12 @@ Walker remain in the general loot and librarian pools.
 灵魂疾行 VI-X 仅出现在堡垒遗迹来源；风爆 VI-X 仅出现在不祥试炼宝库。
 图书管理员不会出售这两种附魔；经验修补和冰霜行者仍属于通用战利品与交易池。
 
+Lunge does not exist in Minecraft 1.21, so this branch does not add or backport
+it. Lunge support begins only on the Minecraft 1.21.11 branch.
+
+突刺（Lunge）并不存在于 Minecraft 1.21，因此本分支不会新增或向旧版本移植该附魔。
+突刺支持仅从 Minecraft 1.21.11 分支开始。
+
 Every master librarian receives exactly one persistent, restockable high-level
 book trade:
 
@@ -83,14 +89,14 @@ catalyst item.
 
 ## Requirements / 运行要求
 
-- Minecraft `26.1.2`
+- Minecraft `1.21`
 - Fabric Loader `0.19.3+`
-- Fabric API `0.146.1+` (tested with `0.154.2+26.1.2`)
-- Java `25+`
+- Fabric API `0.102.0+1.21`
+- Java `21+`
 
-Fabric API `0.146.1+` is required. The currently verified version is `0.154.2+26.1.2`.
+This branch is compiled and verified against Fabric API `0.102.0+1.21`.
 
-需要 Fabric API `0.146.1+`，当前实测版本为 `0.154.2+26.1.2`。
+本分支使用 Fabric API `0.102.0+1.21` 编译并验证。
 
 For multiplayer, the mod is required on the server and optional on clients. Singleplayer users install it on the client.
 
@@ -98,9 +104,13 @@ For multiplayer, the mod is required on the server and optional on clients. Sing
 
 ## Building / 构建
 
-The current PowerShell build pipeline expects a local Minecraft 26.1.2 server JAR and Fabric libraries in the parent server workspace. Run:
+The repository includes a Gradle 9.5.1 wrapper. The build uses Java 21,
+official Mojang mappings, Fabric Loom 1.17.17, and downloads the exact
+Minecraft 1.21 server data required to generate the enchantment overrides. Run:
 
-当前 PowerShell 构建流程需要父级服务器工作区中的 Minecraft 26.1.2 服务端 JAR 和 Fabric 依赖。运行：
+仓库内置 Gradle 9.5.1 Wrapper。构建使用 Java 21、Mojang 官方映射和
+Fabric Loom 1.17.17，并自动下载生成附魔覆盖所需的 Minecraft 1.21
+服务端数据。运行：
 
 ```powershell
 .\build.ps1

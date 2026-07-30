@@ -1,36 +1,61 @@
 param(
-    [string]$Workspace = (Join-Path $PSScriptRoot '..\.ci-workspace')
+    [string]$Workspace = (Join-Path $PSScriptRoot '..\.ci-workspace'),
+    [string]$MinecraftVersion = '1.21'
 )
 
 $ErrorActionPreference = 'Stop'
+
 $workspaceRoot = [System.IO.Path]::GetFullPath($Workspace)
-$launcher = Join-Path $workspaceRoot 'fabric-server.jar'
-$serverJar = Join-Path $workspaceRoot 'versions\26.1.2\server-26.1.2.jar'
-$libraries = Join-Path $workspaceRoot 'libraries'
-$launcherUrl = 'https://meta.fabricmc.net/v2/versions/loader/26.1.2/0.19.3/1.1.1/server/jar'
+$versionDirectory = Join-Path $workspaceRoot "versions\$MinecraftVersion"
+$serverJar = Join-Path $versionDirectory "server-$MinecraftVersion.jar"
+$bundleJar = Join-Path $versionDirectory "server-bundle-$MinecraftVersion.jar"
 
-New-Item -ItemType Directory -Force -Path $workspaceRoot | Out-Null
-
-if (-not (Test-Path -LiteralPath $launcher)) {
-    Invoke-WebRequest -UseBasicParsing -Uri $launcherUrl -OutFile $launcher
+if (Test-Path -LiteralPath $serverJar) {
+    Write-Output "LEVEL10_WORKSPACE=$workspaceRoot"
+    Write-Output "MINECRAFT_SERVER_JAR=$serverJar"
+    exit 0
 }
 
-if (-not (Test-Path -LiteralPath $serverJar) -or -not (Test-Path -LiteralPath $libraries)) {
-    Push-Location $workspaceRoot
-    try {
-        & java -jar $launcher nogui
-        if ($LASTEXITCODE -ne 0) {
-            throw "Fabric server bootstrap failed with exit code $LASTEXITCODE"
-        }
-    } finally {
-        Pop-Location
-    }
+New-Item -ItemType Directory -Force -Path $versionDirectory | Out-Null
+
+$manifestUrl = 'https://piston-meta.mojang.com/mc/game/version_manifest_v2.json'
+$manifest = Invoke-RestMethod -UseBasicParsing -Uri $manifestUrl
+$versionEntry = @($manifest.versions | Where-Object { $_.id -eq $MinecraftVersion })
+if ($versionEntry.Count -ne 1) {
+    throw "Minecraft version $MinecraftVersion is not present in Mojang's version manifest"
 }
 
-foreach ($dependency in @($launcher, $serverJar, $libraries)) {
-    if (-not (Test-Path -LiteralPath $dependency)) {
-        throw "Fabric server bootstrap did not create $dependency"
+$versionMetadata = Invoke-RestMethod -UseBasicParsing -Uri $versionEntry[0].url
+if ($null -eq $versionMetadata.downloads.server.url) {
+    throw "Minecraft version $MinecraftVersion does not publish a server download"
+}
+
+Invoke-WebRequest -UseBasicParsing -Uri $versionMetadata.downloads.server.url -OutFile $bundleJar
+$downloadHash = (Get-FileHash -LiteralPath $bundleJar -Algorithm SHA1).Hash.ToLowerInvariant()
+if ($downloadHash -ne $versionMetadata.downloads.server.sha1.ToLowerInvariant()) {
+    throw "Minecraft server SHA-1 mismatch: expected $($versionMetadata.downloads.server.sha1), got $downloadHash"
+}
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$bundle = [System.IO.Compression.ZipFile]::OpenRead($bundleJar)
+try {
+    $nestedPath = "META-INF/versions/$MinecraftVersion/server-$MinecraftVersion.jar"
+    $nestedServer = $bundle.GetEntry($nestedPath)
+    if ($null -eq $nestedServer) {
+        Move-Item -LiteralPath $bundleJar -Destination $serverJar
+    } else {
+        [System.IO.Compression.ZipFileExtensions]::ExtractToFile($nestedServer, $serverJar, $true)
     }
+} finally {
+    $bundle.Dispose()
+}
+
+if (Test-Path -LiteralPath $bundleJar) {
+    Remove-Item -LiteralPath $bundleJar -Force
+}
+if (-not (Test-Path -LiteralPath $serverJar)) {
+    throw "Minecraft server preparation did not create $serverJar"
 }
 
 Write-Output "LEVEL10_WORKSPACE=$workspaceRoot"
+Write-Output "MINECRAFT_SERVER_JAR=$serverJar"

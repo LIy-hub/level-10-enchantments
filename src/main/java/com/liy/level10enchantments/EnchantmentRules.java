@@ -62,8 +62,8 @@ public final class EnchantmentRules {
             throw new ExceptionInInitializerError(exception);
         }
 
-        if (result.size() != 29) {
-            throw new IllegalStateException("Expected 29 rules, found " + result.size());
+        if (result.size() != 28) {
+            throw new IllegalStateException("Expected 28 rules, found " + result.size());
         }
         return Collections.unmodifiableMap(result);
     }

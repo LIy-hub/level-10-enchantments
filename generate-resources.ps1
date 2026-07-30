@@ -1,21 +1,22 @@
 param(
     [Parameter(Mandatory = $true)]
-    [string]$Output
+    [string]$Output,
+    [string]$MinecraftVersion = '1.21'
 )
 
 $ErrorActionPreference = 'Stop'
 
 $workspace = if ([string]::IsNullOrWhiteSpace($env:LEVEL10_WORKSPACE)) {
-    Resolve-Path (Join-Path $PSScriptRoot '..\..')
+    Resolve-Path (Join-Path $PSScriptRoot '.ci-workspace')
 } else {
     Resolve-Path -LiteralPath $env:LEVEL10_WORKSPACE
 }
-$serverJar = Join-Path $workspace 'versions\26.1.2\server-26.1.2.jar'
+$serverJar = Join-Path $workspace "versions\$MinecraftVersion\server-$MinecraftVersion.jar"
 $rulesPath = Join-Path $PSScriptRoot 'src\main\resources\level10-enchantments.rules.csv'
 $rules = @(Import-Csv $rulesPath)
 
-if ($rules.Count -ne 29) {
-    throw "Expected 29 rules, found $($rules.Count)"
+if ($rules.Count -ne 28) {
+    throw "Expected 28 rules, found $($rules.Count)"
 }
 if (-not (Test-Path -LiteralPath $serverJar)) {
     throw "Missing Minecraft server JAR: $serverJar"
@@ -81,7 +82,9 @@ try {
             $trigger = $json.effects.'minecraft:post_attack'[0]
             $effects = @($trigger.effect.effects)
             $damageEffect = @($effects | Where-Object { $_.type -eq 'minecraft:damage_entity' })
-            $durabilityEffects = @($effects | Where-Object { $_.type -eq 'minecraft:change_item_damage' })
+            $durabilityEffects = @($effects | Where-Object {
+                $_.type -eq 'minecraft:damage_item' -or $_.type -eq 'minecraft:change_item_damage'
+            })
             if ($damageEffect.Count -ne 1 -or $durabilityEffects.Count -ne 1) {
                 throw 'Vanilla thorns effect has an unexpected structure'
             }
