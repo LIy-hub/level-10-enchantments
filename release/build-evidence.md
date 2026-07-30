@@ -1,12 +1,12 @@
 # Build Evidence / 构建证据
 
-- Branch / 分支: `mc/26.1.2`
-- Minecraft: `26.1.2`
+- Branch / 分支: `mc/26.1`
+- Minecraft: `26.1`
 - Mod version / 模组版本: `1.5.1`
 - Gradle: `9.5.1`
 - Loom: `1.17.17`
 - Fabric Loader: `0.19.3`
-- Fabric API: `0.155.2+26.1.2`
+- Fabric API: `0.145.1+26.1`
 - Java: `25.0.2`
 
 ## Successful gate / 成功门禁
@@ -23,25 +23,23 @@ JAR packaging; and packaged metadata/Mixin/resource validation.
 源码包、通用 JAR 以及包内元数据、Mixin 和资源校验全部通过。
 
 Full successful log / 完整成功日志:
-`D:\CodexWorktrees\level10-evidence\26.1.2\clean-check-build-attempt2.log`
+`D:\CodexWorktrees\level10-evidence\26.1\clean-check-build-attempt1.log`
 
 ## Artifacts / 产物
 
 | Artifact | SHA-256 |
 |---|---|
-| `build/libs/level10-enchantments-1.5.1+mc26.1.2.jar` | `3490B4868D3477C575053EC86D83409D67483E7E74EA1B1EB76BA46847DC83FE` |
-| `build/libs/level10-enchantments-1.5.1+mc26.1.2-sources.jar` | `ACCE0FF36ADADB38EDFB9F499D34E8D31478CA4D1C795A86AC5493F5AA96AC1E` |
+| `build/libs/level10-enchantments-1.5.1+mc26.1.jar` | `51BC13CA2C46A8A4052F9C81FE72567486EC11A24F7488D496539ECDB9E2CDFB` |
+| `build/libs/level10-enchantments-1.5.1+mc26.1-sources.jar` | `F516C16D1146526C56198979DDE36BDC93B8962CFE84A8B6D03E83B9745C5D86` |
 
-## Retained failure evidence / 保留的失败证据
+## Migration result / 迁移结果
 
-1. System Gradle 8.8 could not generate a wrapper while running on Java 25:
-   `Unsupported class file major version 69`. The repository now uses the
-   official Fabric example Wrapper assets pinned to Gradle 9.5.1.
-2. The first Gradle 9.5.1 gate compiled and ran every custom test successfully,
-   then failed only because its empty built-in `test` task defaults to
-   `failOnNoDiscoveredTests=true`. The build now explicitly disables that empty
-   task's false-positive while `check` continues to require all eight executable
-   contract tasks.
+The first target-version gate passed. No Minecraft 26.1-specific Java or
+resource adaptation beyond dependency and metadata pinning was required; the
+resource parity test independently confirmed that the committed 29
+enchantments match the 26.1 vanilla definitions except for the frozen 1.5.1
+gameplay changes.
 
-First-gate log / 首轮失败日志:
-`D:\CodexWorktrees\level10-evidence\26.1.2\clean-check-build-attempt1.log`
+目标版本首轮门禁通过。除依赖与元数据锁定外，无需增加 Minecraft 26.1
+专属 Java 或资源改动；资源差分测试独立确认 29 份附魔定义与 26.1 原版一致，
+差异仅限已经冻结的 1.5.1 玩法变更。
