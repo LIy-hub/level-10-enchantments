@@ -5,7 +5,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -80,7 +79,7 @@ public final class HighLevelLootApplier {
             return ItemStack.EMPTY;
         }
         Holder<Enchantment> enchantment = candidates.get(random.nextInt(candidates.size()));
-        return EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, level));
+        return EnchantmentHelper.createBook(new EnchantmentInstance(enchantment, level));
     }
 
     private static String enchantmentId(Holder<Enchantment> holder) {

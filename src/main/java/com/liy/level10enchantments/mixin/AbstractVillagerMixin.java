@@ -15,12 +15,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
@@ -82,7 +82,7 @@ public abstract class AbstractVillagerMixin {
         }
 
         Holder<Enchantment> enchantment = candidates.get(random.nextInt(candidates.size()));
-        ItemStack result = EnchantedBookItem.createForEnchantment(
+        ItemStack result = EnchantmentHelper.createBook(
                 new EnchantmentInstance(enchantment, trade.level())
         );
         CustomData.update(DataComponents.CUSTOM_DATA, result, tag -> tag.putBoolean(TRADE_MARKER, true));
