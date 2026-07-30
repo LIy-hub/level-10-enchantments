@@ -3,10 +3,10 @@
 [![CI](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml)
 
-A Fabric mod for Minecraft 1.20.2 that extends 26 selected vanilla enchantments
+A Fabric mod for Minecraft 1.20.3 that extends 26 selected vanilla enchantments
 to level X without adding new enchantments.
 
-十级附魔是适用于 Minecraft 1.20.2 的 Fabric 模组，将 26 种原版附魔扩展至
+十级附魔是适用于 Minecraft 1.20.3 的 Fabric 模组，将 26 种原版附魔扩展至
 X 级，不新增自定义附魔。
 
 ## Features / 功能
@@ -51,10 +51,10 @@ Mending.
 抢夺、激流、忠诚、效率、时运、耐久、海之眷顾、保护、火焰保护、爆炸保护、
 弹射物保护、荆棘、水下呼吸、冰霜行者、灵魂疾行和经验修补。
 
-Density, Wind Burst, and Lunge do not exist in Minecraft 1.20.2, so this branch
+Density, Wind Burst, and Lunge do not exist in Minecraft 1.20.3, so this branch
 does not add or backport them.
 
-致密、风爆和突刺并不存在于 Minecraft 1.20.2，因此本分支不会新增或回移这些附魔。
+致密、风爆和突刺并不存在于 Minecraft 1.20.3，因此本分支不会新增或回移这些附魔。
 
 ## High-level acquisition / 高阶附魔获取
 
@@ -103,24 +103,24 @@ catalyst item.
 
 ## Requirements / 运行要求
 
-- Minecraft `1.20.2`
+- Minecraft `1.20.3`
 - Fabric Loader `0.19.3+`
-- Fabric API `0.91.6+1.20.2` or newer compatible 1.20.2 build
+- Fabric API `0.91.1+1.20.3` or newer compatible 1.20.3 build
 - Java `17+`
 
 This branch is compiled and checked against exactly Fabric API
-`0.91.6+1.20.2`.
+`0.91.1+1.20.3`.
 
-本分支使用 Fabric API `0.91.6+1.20.2` 精确编译并检查。
+本分支使用 Fabric API `0.91.1+1.20.3` 精确编译并检查。
 
 ## Building / 构建
 
 The repository includes a Gradle 8.14.1 wrapper. The branch uses Java 17,
 official Mojang mappings, Fabric Loom 1.10.5, and legacy code/mixin adapters
-because Minecraft 1.20.2 predates data-driven enchantments.
+because Minecraft 1.20.3 predates data-driven enchantments.
 
 仓库内置 Gradle 8.14.1 Wrapper。本分支使用 Java 17、Mojang 官方映射和
-Fabric Loom 1.10.5；由于 Minecraft 1.20.2 尚未采用数据驱动附魔，本分支通过
+Fabric Loom 1.10.5；由于 Minecraft 1.20.3 尚未采用数据驱动附魔，本分支通过
 旧版代码 API 与 Mixin 完成等价适配。
 
 ```powershell
