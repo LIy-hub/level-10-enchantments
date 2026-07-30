@@ -10,8 +10,8 @@ $libraries = Join-Path $workspace 'libraries'
 $build = Join-Path $PSScriptRoot 'build\package'
 $classes = Join-Path $build 'classes'
 $dist = Join-Path $PSScriptRoot 'build\dist'
-$output = Join-Path $dist 'level10-enchantments-1.4.1.jar'
-$sourcesOutput = Join-Path $dist 'level10-enchantments-1.4.1-sources.jar'
+$output = Join-Path $dist 'level10-enchantments-1.5.1.jar'
+$sourcesOutput = Join-Path $dist 'level10-enchantments-1.5.1-sources.jar'
 
 $javacVersion = (& javac -version 2>&1 | Out-String).Trim()
 if ($javacVersion -notmatch '^javac 25\.') {
@@ -33,8 +33,8 @@ New-Item -ItemType Directory -Force -Path $dist | Out-Null
 
 $sources = @(Get-ChildItem (Join-Path $PSScriptRoot 'src\main\java') -Filter '*.java' -Recurse -File |
     Sort-Object FullName | Select-Object -ExpandProperty FullName)
-if ($sources.Count -ne 9) {
-    throw "Expected 9 Java sources, found $($sources.Count)"
+if ($sources.Count -ne 17) {
+    throw "Expected 17 Java sources, found $($sources.Count)"
 }
 
 $libraryJars = @(Get-ChildItem $libraries -Filter '*.jar' -Recurse -File |

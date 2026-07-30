@@ -1,10 +1,14 @@
 package com.liy.level10enchantments.mixin;
 
 import com.liy.level10enchantments.AnvilCostPolicy;
+import com.liy.level10enchantments.AnvilLevelMergePolicy;
 import com.liy.level10enchantments.CompatibilitySurcharge;
+import com.liy.level10enchantments.EnchantmentRules;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.item.ItemStack;
@@ -58,6 +62,13 @@ public abstract class AnvilMenuMixin {
             return;
         }
 
+        int preventedIncrementCost = balanceResultLevels(
+                menu.getSlot(AnvilMenu.INPUT_SLOT).getItem(),
+                menu.getSlot(AnvilMenu.ADDITIONAL_SLOT).getItem(),
+                result
+        );
+        cost.set(Math.max(0, cost.get() - preventedIncrementCost));
+
         int surcharge = CompatibilitySurcharge.calculate(
                 enchantmentLevels(menu.getSlot(AnvilMenu.INPUT_SLOT).getItem()),
                 enchantmentLevels(menu.getSlot(AnvilMenu.ADDITIONAL_SLOT).getItem()),
@@ -76,6 +87,47 @@ public abstract class AnvilMenuMixin {
             ));
         }
         return levels;
+    }
+
+    private static int balanceResultLevels(ItemStack left, ItemStack right, ItemStack result) {
+        ItemEnchantments leftEnchantments = EnchantmentHelper.getEnchantmentsForCrafting(left);
+        ItemEnchantments rightEnchantments = EnchantmentHelper.getEnchantmentsForCrafting(right);
+        boolean rightIsBook = right.has(DataComponents.STORED_ENCHANTMENTS);
+        int[] preventedCost = {0};
+
+        EnchantmentHelper.updateEnchantments(result, mutable -> {
+            for (Holder<Enchantment> holder : List.copyOf(mutable.keySet())) {
+                String id = holder.unwrapKey()
+                        .map(key -> key.identifier().toString())
+                        .orElse("");
+                EnchantmentRules.Rule rule = EnchantmentRules.find(id).orElse(null);
+                if (rule == null) {
+                    continue;
+                }
+
+                int leftLevel = leftEnchantments.getLevel(holder);
+                int rightLevel = rightEnchantments.getLevel(holder);
+                int mergedLevel = AnvilLevelMergePolicy.merge(
+                        rule.vanillaMax(),
+                        leftLevel,
+                        rightLevel
+                );
+                mutable.set(holder, mergedLevel);
+
+                if (AnvilLevelMergePolicy.preventsIncrement(
+                        rule.vanillaMax(),
+                        leftLevel,
+                        rightLevel
+                )) {
+                    int unitCost = holder.value().getAnvilCost();
+                    if (rightIsBook) {
+                        unitCost = Math.max(1, unitCost / 2);
+                    }
+                    preventedCost[0] += unitCost;
+                }
+            }
+        });
+        return preventedCost[0];
     }
 
 }

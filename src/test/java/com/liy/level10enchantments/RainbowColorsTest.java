@@ -2,17 +2,19 @@ package com.liy.level10enchantments;
 
 public final class RainbowColorsTest {
     public static void main(String[] args) {
-        require(RainbowColors.rgbForIndex(0, 0L) == 0xFF3333, "gradient starts red");
-        require(RainbowColors.rgbForIndex(0, 1_000L) != RainbowColors.rgbForIndex(0, 0L),
+        int start = RainbowColors.rgbForIndex(0, 12, 0L);
+        require(start == 0xFB89D5, "gradient starts with softened rose");
+        require(RainbowColors.rgbForIndex(0, 12, 1_000L) != start,
                 "color changes over time");
-        require(RainbowColors.rgbForIndex(1, 0L) != RainbowColors.rgbForIndex(0, 0L),
+        require(RainbowColors.rgbForIndex(1, 12, 0L) != start,
                 "neighboring characters have a gradient");
-        require(RainbowColors.rgbForIndex(0, 6_000L) == RainbowColors.rgbForIndex(0, 0L),
+        require(RainbowColors.rgbForIndex(0, 12, 12_000L) == start,
                 "color animation loops cleanly");
-        require(!RainbowColors.isBold(0, 0L) && RainbowColors.isBold(0, 600L),
-                "font weight pulses over time");
-        require(RainbowColors.isBold(4, 0L) != RainbowColors.isBold(0, 0L),
-                "font weight wave moves across characters");
+        int nearbyFrame = RainbowColors.rgbForIndex(0, 12, 16L);
+        require(colorDistance(start, nearbyFrame) <= 3,
+                "animation changes smoothly between adjacent frames");
+        require(!RainbowColors.isBold(0, 0L) && !RainbowColors.isBold(0, 6_000L),
+                "binary font-weight pulse removed");
         boolean rejected = false;
         try {
             RainbowColors.rgbForIndex(-1);
@@ -20,7 +22,14 @@ public final class RainbowColorsTest {
             rejected = true;
         }
         require(rejected, "negative index rejected");
-        System.out.println("PASS: animated level X rainbow and font-weight wave");
+        System.out.println("PASS: smooth level X aurora gradient without weight flicker");
+    }
+
+    private static int colorDistance(int first, int second) {
+        int red = Math.abs((first >> 16 & 0xFF) - (second >> 16 & 0xFF));
+        int green = Math.abs((first >> 8 & 0xFF) - (second >> 8 & 0xFF));
+        int blue = Math.abs((first & 0xFF) - (second & 0xFF));
+        return red + green + blue;
     }
 
     private static void require(boolean condition, String message) {

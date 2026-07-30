@@ -1,28 +1,21 @@
 package com.liy.level10enchantments.mixin;
 
-import com.liy.level10enchantments.BreakthroughSelector;
+import com.liy.level10enchantments.EnchantingLevelPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EnchantmentMenu.class)
 public abstract class EnchantmentMenuMixin {
-    @Shadow
-    @Final
-    private RandomSource random;
-
     @Inject(method = "getEnchantmentList", at = @At("RETURN"), cancellable = true)
-    private void level10$applyBreakthroughs(
+    private void level10$capTableEnchantments(
             RegistryAccess access,
             ItemStack stack,
             int optionIndex,
@@ -34,13 +27,7 @@ public abstract class EnchantmentMenuMixin {
             String id = instance.enchantment().unwrapKey()
                     .map(key -> key.identifier().toString())
                     .orElse("");
-            int level = BreakthroughSelector.selectLevel(
-                    id,
-                    instance.level(),
-                    optionIndex,
-                    displayedCost,
-                    random::nextDouble
-            );
+            int level = EnchantingLevelPolicy.capToVanillaMaximum(id, instance.level());
             transformed.add(new EnchantmentInstance(instance.enchantment(), level));
         }
         callback.setReturnValue(List.copyOf(transformed));

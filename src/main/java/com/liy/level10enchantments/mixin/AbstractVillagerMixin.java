@@ -1,0 +1,117 @@
+package com.liy.level10enchantments.mixin;
+
+import com.liy.level10enchantments.EnchantmentLevelNormalizer;
+import com.liy.level10enchantments.LootBalancePolicy;
+import com.liy.level10enchantments.MasterLibrarianTradePolicy;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.item.trading.ItemCost;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(AbstractVillager.class)
+public abstract class AbstractVillagerMixin {
+    private static final String TRADE_MARKER = "level10enchantments:master_librarian_trade";
+
+    @Inject(method = "getOffers", at = @At("RETURN"))
+    private void level10$ensureMasterLibrarianTrade(
+            CallbackInfoReturnable<MerchantOffers> callback
+    ) {
+        if (!((Object) this instanceof Villager villager)
+                || villager.getVillagerData().level() < 5
+                || !villager.getVillagerData().profession().is(VillagerProfession.LIBRARIAN)) {
+            return;
+        }
+
+        MerchantOffers offers = callback.getReturnValue();
+        boolean foundBalancedTrade = false;
+        Iterator<MerchantOffer> iterator = offers.iterator();
+        while (iterator.hasNext()) {
+            MerchantOffer offer = iterator.next();
+            if (isBalancedTrade(offer.getResult())) {
+                if (foundBalancedTrade) {
+                    iterator.remove();
+                } else {
+                    foundBalancedTrade = true;
+                }
+            } else {
+                EnchantmentLevelNormalizer.capToVanillaMaximum(offer.getResult());
+            }
+        }
+
+        if (!foundBalancedTrade) {
+            MerchantOffer balancedTrade = createBalancedTrade(villager);
+            if (balancedTrade != null) {
+                offers.add(balancedTrade);
+            }
+        }
+    }
+
+    private static MerchantOffer createBalancedTrade(Villager villager) {
+        RandomSource random = villager.getRandom();
+        MasterLibrarianTradePolicy.Trade trade =
+                MasterLibrarianTradePolicy.select(random.nextDouble());
+        Registry<Enchantment> registry = villager.registryAccess()
+                .lookupOrThrow(Registries.ENCHANTMENT);
+        List<Holder.Reference<Enchantment>> candidates = registry.listElements()
+                .filter(holder -> LootBalancePolicy.allowsLibrarianTrade(enchantmentId(holder)))
+                .toList();
+        if (candidates.isEmpty()) {
+            return null;
+        }
+
+        Holder<Enchantment> enchantment = candidates.get(random.nextInt(candidates.size()));
+        ItemStack result = EnchantmentHelper.createBook(
+                new EnchantmentInstance(enchantment, trade.level())
+        );
+        CustomData.update(DataComponents.CUSTOM_DATA, result, tag -> tag.putBoolean(TRADE_MARKER, true));
+
+        Item catalyst = switch (trade.catalyst()) {
+            case BOOK -> Items.BOOK;
+            case DIAMOND -> Items.DIAMOND;
+            case ECHO_SHARD -> Items.ECHO_SHARD;
+            case NETHERITE_INGOT -> Items.NETHERITE_INGOT;
+        };
+        return new MerchantOffer(
+                new ItemCost(Items.EMERALD, trade.emeraldCost()),
+                Optional.of(new ItemCost(catalyst, 1)),
+                result,
+                trade.maxUses(),
+                30,
+                0.2F
+        );
+    }
+
+    private static boolean isBalancedTrade(ItemStack stack) {
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        CompoundTag tag = customData.copyTag();
+        return tag.getBooleanOr(TRADE_MARKER, false);
+    }
+
+    private static String enchantmentId(Holder<Enchantment> holder) {
+        return holder.unwrapKey()
+                .map(key -> key.identifier().toString())
+                .orElse("");
+    }
+}

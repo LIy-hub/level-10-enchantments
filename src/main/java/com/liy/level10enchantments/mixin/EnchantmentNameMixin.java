@@ -25,13 +25,15 @@ public abstract class EnchantmentNameMixin {
         String text = callback.getReturnValue().getString();
         MutableComponent rainbow = Component.empty();
         long now = System.currentTimeMillis();
+        int glyphCount = text.codePointCount(0, text.length());
         int colorIndex = 0;
         for (int offset = 0; offset < text.length(); colorIndex++) {
             int codePoint = text.codePointAt(offset);
             String character = new String(Character.toChars(codePoint));
-            int rgb = RainbowColors.rgbForIndex(colorIndex, now);
-            boolean bold = RainbowColors.isBold(colorIndex, now);
-            rainbow.append(Component.literal(character).withStyle(style -> style.withColor(rgb).withBold(bold)));
+            int rgb = RainbowColors.rgbForIndex(colorIndex, glyphCount, now);
+            rainbow.append(Component.literal(character).withStyle(style ->
+                    style.withColor(rgb).withBold(false)
+            ));
             offset += Character.charCount(codePoint);
         }
         callback.setReturnValue(rainbow);

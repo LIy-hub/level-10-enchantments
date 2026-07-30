@@ -39,10 +39,15 @@ if (Test-Path -LiteralPath $testRoot) {
 New-Item -ItemType Directory -Force -Path $testRoot | Out-Null
 New-Item -ItemType Directory -Force -Path (Join-Path $testRoot 'mods') | Out-Null
 Copy-Item (Join-Path $workspace 'fabric-server.jar') $testRoot
-$candidateJar = Join-Path $PSScriptRoot 'build\dist\level10-enchantments-1.4.1.jar'
+$fabricServerCache = Join-Path $workspace '.fabric\server'
+Assert (Test-Path -LiteralPath $fabricServerCache) 'cached Fabric server runtime exists'
+New-Item -ItemType Directory -Force -Path (Join-Path $testRoot '.fabric') | Out-Null
+Copy-Item $fabricServerCache (Join-Path $testRoot '.fabric') -Recurse
+$candidateJar = Join-Path $PSScriptRoot 'build\dist\level10-enchantments-1.5.1.jar'
 Assert (Test-Path -LiteralPath $candidateJar) 'tested Level 10 Enchantments candidate exists'
 Get-ChildItem (Join-Path $workspace 'mods') -Filter '*.jar' -File |
     Where-Object { $_.Name -notlike 'level10-enchantments-*.jar' } |
+    Where-Object { $_.Name -notlike 'terrain-diffusion-*.jar' } |
     Where-Object { -not $ExcludeTaxFreeLevels -or $_.Name -notlike 'TaxFreeLevels-*.jar' } |
     Copy-Item -Destination (Join-Path $testRoot 'mods')
 Copy-Item $candidateJar (Join-Path $testRoot 'mods')

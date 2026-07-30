@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "level10enchantments",
-  "version": "1.4.1",
+  "version": "1.5.1",
   "name": "Level 10 Enchantments",
-  "description": "Adds level X enchantments, compatibility features, and a universal 100-level anvil cost cap.",
+  "description": "Adds loot- and librarian-gated level X enchantments, compatibility features, and a universal 100-level anvil cost cap.",
   "license": "LGPL-3.0-or-later",
   "icon": "assets/level10enchantments/icon.png",
   "environment": "*",

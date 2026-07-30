@@ -4,9 +4,12 @@
   "package": "com.liy.level10enchantments.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "AbstractVillagerMixin",
+    "EnchantRandomlyFunctionMixin",
     "EnchantmentMenuMixin",
     "AnvilMenuMixin",
-    "EnchantmentHelperMixin"
+    "EnchantmentHelperMixin",
+    "LootTableMixin"
   ],
   "client": [
     "EnchantmentNameMixin"
