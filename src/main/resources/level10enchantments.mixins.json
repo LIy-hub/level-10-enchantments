@@ -16,8 +16,7 @@
     "LootTableMixin"
   ],
   "client": [
-    "EnchantmentNameMixin",
-    "ItemStackTooltipMixin"
+    "EnchantmentNameMixin"
   ],
   "injectors": {
     "defaultRequire": 1

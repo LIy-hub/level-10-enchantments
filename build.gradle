@@ -59,6 +59,7 @@ def pureLogicTests = [
 		"EnchantmentLevelNamesTest",
 		"TooltipEnchantmentLinePolicyTest",
 		"TooltipRainbowComponentsTest",
+		"TooltipTransformOrderingTest",
 		"LegacyEffectPolicyTest",
 		"LegacyMaxLevelTargetTest"
 ]

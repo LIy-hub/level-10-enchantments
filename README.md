@@ -6,8 +6,10 @@
 A Fabric mod for Minecraft 1.20.1 that extends 26 selected vanilla enchantments
 to level X without adding new enchantments.
 
+This visual compatibility update is versioned `1.5.3`.
+
 十级附魔是适用于 Minecraft 1.20.1 的 Fabric 模组，将 26 种原版附魔扩展至
-X 级，不新增自定义附魔。
+X 级，不新增自定义附魔。本次视觉兼容更新版本为 `1.5.3`。
 
 ## Features / 功能
 
