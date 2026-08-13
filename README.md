@@ -33,11 +33,22 @@ X 级，不新增自定义附魔。
 - Thorns scales to a 100% trigger chance and 10–15 retaliation damage at level X
   without damaging the enchanted item.<br>
   荆棘在 X 级达到 100% 触发率和 10–15 点反伤，且不会损耗附魔物品耐久。
-- Clients with the mod installed see a smooth aurora gradient on level-X names.
-  The server remains authoritative; multiplayer clients may join without the
-  mod but will not see that animation.<br>
-  安装模组的客户端会看到 X 级名称的平滑极光渐变。服务端负责玩法逻辑；多人客户端
-  可以不安装，但不会看到该动画。
+- Clients with the mod installed see a stable per-enchantment aurora gradient
+  on level X and every higher level. Higher levels move faster and use a richer
+  hue span with a bounded breathing highlight; different enchantments on the
+  same item use deterministic, de-synchronised phases. XI-XIII are localized
+  and XIV+ uses a stable Roman-numeral fallback. Dynamic styling runs only
+  after tooltip extensions finish, so Enchantment Descriptions remains stable;
+  the original static enchantment colour is transferred only to that exact
+  enchantment's description and never bleeds into lore or attributes. The
+  server remains authoritative; clients without the mod simply do not see the
+  animation.<br>
+  安装模组的客户端会看到 X 级及所有更高等级的稳定极光渐变；等级越高，动画越快、
+  色相层次越丰富，并带有受限的呼吸高光。同一物品上的不同附魔按稳定 ID 错相，
+  不会同步扫色。XI–XIII 具备本地化文本，XIV 以上使用稳定的罗马数字回退。动态样式
+  会在其他提示扩展完成后再应用，因此兼容 Enchantment Descriptions；附魔原有静态
+  颜色只会转移到该附魔自己的解释行，不会污染 Lore 或属性行。未安装本模组的客户端
+  仍可连接，但不会看到动画。
 
 ## Supported enchantments / 支持的附魔
 
