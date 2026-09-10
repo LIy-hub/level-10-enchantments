@@ -1,63 +1,79 @@
 # Level 10 Enchantments
 
-[![CI](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml/badge.svg)](https://github.com/LIy-hub/level-10-enchantments/actions/workflows/codeql.yml)
+[Download](https://www.curseforge.com/minecraft/mc-mods/level-10-enchantments/files) · [中文](#中文)
 
-A Fabric mod for Minecraft 26.1.2 that extends selected vanilla enchantments to level X.
+Take familiar enchantments beyond their vanilla limits. Level 10 Enchantments adds level VI–X enchanted loot and books to structure rewards and master librarian trades, giving exploration and trading a place in building stronger equipment.
 
-十级附魔是一个适用于 Minecraft 26.1.2 的 Fabric 模组，将适合的原版附魔扩展至 X 级。
+### Getting higher levels
 
-## Features / 功能
+Search stronghold libraries, woodland mansions, bastions, Ancient Cities, and End Cities for high-level enchanted loot. Trial vaults are another source on Minecraft versions that include them. Each master librarian also gains one fixed high-level book trade that can be restocked.
 
-- 29 selected vanilla enchantments can reach level X  
-  29 种适合的原版附魔可提升至 X 级
-- Rare level VI-X breakthroughs from the enchanting table  
-  附魔台有较低概率直接突破至 VI-X 级
-- Mending X repairs 8 durability per XP  
-  经验修补 X 每点经验修复 8 点耐久
-- Universal 100-level anvil cost cap  
-  铁砧花费上限为 100 级
-- Selected incompatible enchantments can be combined with progressive surcharges  
-  部分互斥附魔可以组合，并产生递增的额外花费
-- Elytra supports selected chestplate enchantments  
-  鞘翅支持部分胸甲附魔
-- Up to 25 bookshelves affect enchanting  
-  最多 25 个书架可以影响附魔
-- Animated rainbow names for level-X enchantments on the client  
-  客户端显示 X 级附魔动态彩虹名称
+The enchanting table still stops at vanilla maximum levels. Anvils can apply the high-level books you find, but combining two enchantments already at their vanilla maximum will not raise their level. For example, two Sharpness V books stay at V; find or buy a higher-level book to go further.
 
-## Requirements / 运行要求
+Soul Speed VI–X comes from bastions. Wind Burst VI–X comes from ominous trial vaults. Librarians sell neither of these two enchantments.
 
-- Minecraft `26.1.2`
-- Fabric Loader `0.19.3+`
-- Fabric API `0.146.1+` (tested with `0.154.2+26.1.2`)
-- Java `25+`
+### Other changes
 
-Fabric API `0.146.1+` is required. The currently verified version is `0.154.2+26.1.2`.
+- **Mending X** repairs 8 durability per experience point.
+- **Anvil costs** are capped at 100 levels, including operations that would otherwise cost more.
+- **Selected conflicting enchantments** can share an item, with extra anvil costs.
+- **Elytra** accepts selected chestplate enchantments.
+- **Up to 25 bookshelves** improve the chance of vanilla maximum-level and multiple-enchantment results.
+- **Level-X names** have an animated aurora gradient when the mod is installed on the client.
 
-需要 Fabric API `0.146.1+`，当前实测版本为 `0.154.2+26.1.2`。
+Only selected enchantments are extended. The selection contains 26 enchantments on 1.20.x, 28 on 1.21–1.21.10, and 29 on 1.21.11 and 26.x. Later enchantments and structures are available only in Minecraft versions that contain them.
 
-For multiplayer, the mod is required on the server and optional on clients. Singleplayer users install it on the client.
+### Installation
 
-多人游戏中服务端必须安装，客户端可选；单人游戏需要在客户端安装。
+Install Fabric Loader 0.19.3 or newer, Fabric API, and the mod file for your exact Minecraft version.
 
-## Building / 构建
+| Minecraft | Java |
+| --- | --- |
+| 1.20.1–1.20.4 | 17 |
+| 1.20.5–1.20.6; 1.21–1.21.11 | 21 |
+| 26.1, 26.1.1, 26.1.2, 26.2 | 25 |
 
-The current PowerShell build pipeline expects a local Minecraft 26.1.2 server JAR and Fabric libraries in the parent server workspace. Run:
+For singleplayer, install in the client's `mods` folder. For multiplayer, the server needs the mod; clients can join without it. Installing it on a client adds the level-X name effect. Choose a Fabric API file compatible with the requirements of the downloaded mod file.
 
-当前 PowerShell 构建流程需要父级服务器工作区中的 Minecraft 26.1.2 服务端 JAR 和 Fabric 依赖。运行：
+## 中文
 
-```powershell
-.\build.ps1
-.\test.ps1
-```
+十级附魔把部分熟悉的原版附魔扩展到 X 级。探索结构、收集高阶战利品，或培养大师级图书管理员，获得 VI–X 级附魔书，再用它们强化装备。
 
-Build outputs are written to `build/dist/`.
+### 高阶附魔怎么获得
+
+要塞图书馆、林地府邸、堡垒遗迹、远古城市和末地城都有机会出现高阶附魔战利品。包含试炼宝库的游戏版本还可以从宝库中获取。每位大师级图书管理员会固定增加一项可补货的高阶附魔书交易。
+
+附魔台仍遵守原版等级上限。铁砧可以把找到的高阶附魔书应用到装备上，但达到原版上限后，继续合并同级附魔不会升级。例如，两本锋利 V 合并后仍是 V；想继续提升，需要探索或交易获得更高等级的书。
+
+灵魂疾行 VI–X 只来自堡垒遗迹，风爆 VI–X 只来自不祥试炼宝库。图书管理员不会出售这两种附魔。
+
+### 其他调整
+
+- **经验修补 X**：每点经验修复 8 点耐久。
+- **铁砧花费**：单次操作最多收取 100 级经验，原本超过 100 级的结果也可以取出。
+- **附魔组合**：允许部分原本互斥的附魔共存，组合时增加铁砧花费。
+- **鞘翅附魔**：支持部分胸甲附魔。
+- **书架**：最多 25 个书架可以提高原版最高级和多附魔结果的概率。
+- **名称显示**：客户端安装后，X 级附魔名称带有动态极光渐变。
+
+模组只扩展所选附魔：1.20.x 为 26 种，1.21–1.21.10 为 28 种，1.21.11 和 26.x 为 29 种。旧游戏版本没有的附魔与结构不会额外加入。
+
+### 安装
+
+需要 Fabric Loader 0.19.3 或更高版本、Fabric API，以及对应 Minecraft 版本的模组文件。
+
+- Minecraft 1.20.1–1.20.4：Java 17。
+- Minecraft 1.20.5–1.20.6、1.21–1.21.11：Java 21。
+- Minecraft 26.1、26.1.1、26.1.2、26.2：Java 25。
+
+单人游戏装在客户端的 `mods` 文件夹。多人游戏由服务端安装，客户端可选；客户端安装后可显示 X 级附魔名称特效。Fabric API 版本须满足所下载模组文件的依赖要求。
 
 ## License / 许可证
 
-Licensed under the GNU Lesser General Public License v3.0 or later:
+[LGPL-3.0-or-later](LICENSE). Full license texts: [COPYING.LESSER](COPYING.LESSER) and [COPYING](COPYING).
 
-`LGPL-3.0-or-later`
+## Development / 开发
 
-See [LICENSE](LICENSE), [COPYING.LESSER](COPYING.LESSER), and [COPYING](COPYING).
+Current release source is on the `mc/<Minecraft version>` branches; `main` retains the older 1.4.1 source. 当前发布版源码位于各 `mc/<Minecraft 版本>` 分支，`main` 保留旧的 1.4.1 源码。
+
+[Source branches, builds, and technical notes / 源码分支、构建与技术说明](docs/development.md)
