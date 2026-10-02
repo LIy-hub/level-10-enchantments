@@ -21,6 +21,7 @@ public final class MixinBootstrapTest {
                     "net.minecraft.world.inventory.AnvilMenu",
                     "net.minecraft.world.inventory.EnchantmentMenu",
                     "net.minecraft.world.item.enchantment.EnchantmentHelper",
+                    "net.minecraft.world.item.enchantment.Enchantment",
                     "net.minecraft.world.level.storage.loot.LootTable",
                     "net.minecraft.world.level.storage.loot.functions.EnchantRandomlyFunction"}) {
                 Class<?> transformed = Class.forName(target);

@@ -85,12 +85,12 @@ catalyst item.
 
 - Minecraft `26.3`
 - Fabric Loader `0.19.5+`
-- Fabric API `0.161.0+` (build-pinned to; validation in progress `0.161.0+26.3`)
+- Fabric API `0.161.0+` (verified build pin: `0.161.0+26.3`)
 - Java `25+`
 
 Fabric API `0.161.0+` is required. The build-pinned version is `0.161.0+26.3`.
 
-需要 Fabric API `0.161.0+`，当前构建锁定版本（验证进行中）为 `0.161.0+26.3`。
+需要 Fabric API `0.161.0+`，当前构建与测试锁定版本为 `0.161.0+26.3`。
 
 For multiplayer, the mod is required on the server and optional on clients. Singleplayer users install it on the client.
 
@@ -115,6 +115,14 @@ Build outputs are written to `build/libs/`:
 - `level10-enchantments-1.5.1+mc26.3-sources.jar`
 
 构建产物位于 `build/libs/`，文件名明确包含模组版本与 Minecraft 版本。
+
+## Minecraft 26.3 verification / 适配验证
+
+See [build evidence](release/build-evidence.md) and the [26.3 changelog](CHANGELOG-26.3.md).
+CI compiles both source sets, verifies the packaged JAR, runs all eight gameplay-policy suites,
+and confirms Fabric Loader applies the production mixins. World/multiplayer playtesting remains separate.
+
+详见构建证据与 26.3 更新记录。CI 已完成双端源码编译、成品 JAR 检查、八组玩法策略测试与真实 Mixin 应用验证；未宣称完成实机世界或多人联机验收。
 
 ## License / 许可证
 

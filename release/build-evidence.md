@@ -1,49 +1,30 @@
-# Build Evidence / 构建证据
+# Minecraft 26.3 build evidence
 
-- Branch / 分支: `mc/26.2`
-- Minecraft: `26.2`
-- Mod version / 模组版本: `1.5.1`
-- Gradle: `9.5.1`
-- Loom: `1.17.17`
-- Fabric Loader: `0.19.3`
-- Fabric API: `0.155.2+26.2`
-- Java: `25.0.2`
+- Branch: `mc/26.3`; mod version remains `1.5.1`
+- Minecraft 26.3; Java 25; Fabric Loader 0.19.5; Fabric API 0.161.0+26.3
+- Loom 1.17.21; Gradle 9.6.0, wrapper distribution checksum pinned
+- Verified code checkpoint: `d945e8f941dfd1458a501df4dca8642e3f486bb5`
+- [Successful CI build](https://github.com/LIy-hub/level-10-enchantments/actions/runs/37045895145)
+- [JAR and sources](https://github.com/LIy-hub/level-10-enchantments/actions/runs/37045895145/artifacts/11244430908)
 
-## Successful gate / 成功门禁
+## Passed
 
-```powershell
-.\gradlew.bat clean check build --no-daemon --no-parallel --stacktrace
-```
+`./gradlew clean check build --no-daemon` compiles main, client and test sources, runs the eight policy executables, validates the packaged JAR and runs Fabric Loader JUnit.
 
-Passed production, client, and test compilation; seven gameplay policy tests;
-the target-version vanilla resource parity test; sources packaging; universal
-JAR packaging; and packaged metadata/Mixin/resource validation.
+The policies cover enchanting caps, anvil merging/costs, compatibility surcharge, loot identity/probability/dimension gates, librarian trades, rainbow text and resource parity. The parity test compares all 29 enchantments against Mojang's actual 26.3 resources while allowing only the frozen 1.5.1 gameplay changes.
 
-生产端、客户端与测试源码编译、七项玩法策略测试、目标版本原版资源逐项差分、
-源码包、通用 JAR 以及包内元数据、Mixin 和资源校验全部通过。
+Loader bootstrap checks mod discovery and injected methods on the common Mixin targets; the follow-up adds an explicit client enchantment-name target assertion. CI runs on each commit.
 
-Full successful log / 完整成功日志:
-`D:\CodexWorktrees\level10-evidence\26.2\clean-check-build-attempt2.log`
+## Runtime JAR SHA-256
 
-## Artifacts / 产物
+`2d5e106602858e50c728322ffb279fa9a1ed20c12b7870daee4be2d54e20d287`
 
-| Artifact | SHA-256 |
-|---|---|
-| `build/libs/level10-enchantments-1.5.1+mc26.2.jar` | `A8AE474138830E71E9ADD7E728548E7C0E861E2F932B39743D1F8832C5CBA15B` |
-| `build/libs/level10-enchantments-1.5.1+mc26.2-sources.jar` | `BF4FE76491EE485CCBF89A88251F3B29D3F267045B65828C1863383A24F12487` |
+The downloaded CI artifact was independently inspected and the resource parity test also passed locally against Mojang's official 26.3 client JAR.
 
-## Retained failure evidence / 保留的失败证据
+## Verification limits
 
-The first Minecraft 26.2 gate compiled production, client, and test code and
-passed all seven gameplay policy tests, then correctly failed the vanilla
-resource parity test because 26.2 changed the `smite` entity predicate schema.
-All 29 override resources were regenerated from the target-version common JAR;
-ten files changed, and the second full gate passed the deep parity comparison.
+No dedicated-server/world startup, client UI, or interactive/multiplayer playtest is claimed. No EULA acceptance, release/tag creation, or CurseForge upload was performed.
 
-Minecraft 26.2 首轮门禁完成全部源码编译并通过七项玩法策略测试，随后因 26.2
-修改了 `smite` 实体谓词结构而被原版资源差分测试正确拦截。29 份覆盖资源随后
-全部从目标版本 common JAR 重新生成，其中十份产生实际差异；第二轮完整门禁及
-深度差分全部通过。
+Local Gradle cannot initialize Loom because this cloud environment denies its Unix-domain socket capability probe. No patched build tools or sandbox bypasses were used; the normal GitHub runner performed the complete Gradle build.
 
-First-gate log / 首轮失败日志:
-`D:\CodexWorktrees\level10-evidence\26.2\clean-check-build-attempt1.log`
+Historical 26.2 evidence remains on the unchanged `mc/26.2` branch.
